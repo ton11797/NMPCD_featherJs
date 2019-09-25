@@ -1,0 +1,37 @@
+{
+  "host": "localhost",
+  "port": 3030,
+  "public": "../public/",
+  "paginate": {
+    "default": 10,
+    "max": 50
+  },
+  "authentication": {
+    "entity": "user",
+    "service": "users",
+    "secret": "/tK8Nwug3M7hxB2dV1YjPf3C+Vs=",
+    "authStrategies": [
+      "jwt",
+      "local"
+    ],
+    "jwtOptions": {
+      "header": {
+        "typ": "access"
+      },
+      "audience": "https://yourdomain.com",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
+    },
+    "local": {
+      "usernameField": "email",
+      "passwordField": "password"
+    }
+  },
+  "postgres": "postgresql://postgres:password@localhost:54320/test",
+  "neo4j":{
+    "connection":"bolt://localhost",
+    "username":"neo4j",
+    "password":"password"
+  }
+}
