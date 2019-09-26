@@ -1,29 +1,31 @@
-// Initializes the `versiobControl/changeState` service on path `/versiobControl/change-state`
+// Initializes the `test/sequelize` service on path `/test/sequelize`
 import { ServiceAddons } from '@feathersjs/feathers';
 import { Application } from '../../../declarations';
-import { ChangeState } from './change-state.class';
-import hooks from './change-state.hooks';
+import { Sequelize } from './sequelize.class';
+import createModel from '../../../models/sequelize.model';
+import hooks from './sequelize.hooks';
 
 // Add this service to the service type index
 declare module '../../../declarations' {
   interface ServiceTypes {
-    'versiobControl/change-state': ChangeState & ServiceAddons<any>;
+    'test/sequelize': Sequelize & ServiceAddons<any>;
   }
 }
 
 export default function (app: Application) {
-  
+  const Model = createModel(app);
   const paginate = app.get('paginate');
 
   const options = {
+    Model,
     paginate
   };
 
   // Initialize our service with any options it requires
-  app.use('/versiobControl/change-state', new ChangeState(options, app));
+  app.use('/test/sequelize', new Sequelize(options, app));
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('versiobControl/change-state');
+  const service = app.service('test/sequelize');
 
   service.hooks(hooks);
 }

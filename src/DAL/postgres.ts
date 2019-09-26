@@ -1,8 +1,9 @@
-import  { Pool, Client } from 'pg'
-import db_config from '../Config/database'
+import  { Pool, Client,PoolClient } from 'pg'
+import app from '../app';
 export default class {
+    pool:any
     constructor(){
-        this.pool = new Pool(db_config.postgres)
+        this.pool = new Pool({connectionString:app.get("postgres")})
     }
     open(){
         return new Promise((resolve, reject) => {

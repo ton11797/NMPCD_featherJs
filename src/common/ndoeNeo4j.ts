@@ -1,4 +1,4 @@
-import neo4jDB from '../../DAL/neo4j'
+import neo4jDB from '../DAL/neo4j'
 export default class{
     notEmply(key:any){
         if(key === undefined || key === null)return false
