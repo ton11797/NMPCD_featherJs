@@ -3,6 +3,7 @@ import { Application } from '../../declarations';
 import { MongoClient } from 'mongodb';
 import { BadRequest } from '@feathersjs/errors';
 import postgresDB from '../../DAL/postgres'
+import neo4jDB from '../../DAL/neo4j'
 interface Data {
 
 }
@@ -58,7 +59,11 @@ export class Schema implements ServiceMethods<Data> {
       
       if(result.schema[schemaName] === undefined){
         await client.query('BEGIN')
-        await client.query(`CREATE TABLE ${schemaName}_${versionUUID} (uuid char(36),${fieldName} ${type})`)
+        await client.query(`CREATE TABLE "${schemaName}_${versionUUID}" (_uuid char(36),${fieldName} ${type})`)
+        await client.query(`CREATE TABLE "${schemaName}_${versionUUID}_c" (_uuid char(36),${fieldName} ${type})`)
+        let neo = new neo4jDB()
+        let version = versionUUID.replace(/-/g,"")
+        await neo.Session_commit(`CREATE (:_schema:_${version} {Param})`,{Param:{versionUUID,schemaName}})
         //create table
         result.schema[schemaName] = [fieldDetail]
       }else{
@@ -75,7 +80,10 @@ export class Schema implements ServiceMethods<Data> {
           //alter table
           await client.query('BEGIN')
           await client.query(`
-          ALTER TABLE ${schemaName}_${versionUUID}
+          ALTER TABLE "${schemaName}_${versionUUID}"
+          ADD COLUMN ${fieldName} ${type}`)
+          await client.query(`
+          ALTER TABLE "${schemaName}_${versionUUID}_c"
           ADD COLUMN ${fieldName} ${type}`)
           // await client.query(`ADD COLUMN ${fieldName} ${type}`)
           result.schema[schemaName].push(fieldDetail)
@@ -99,12 +107,24 @@ export class Schema implements ServiceMethods<Data> {
         //drop COLUMN
         await client.query('BEGIN')
         await client.query(`
-        ALTER TABLE ${schemaName}_${versionUUID}
+        ALTER TABLE "${schemaName}_${versionUUID}"
         DROP COLUMN ${fieldName}`)
         result.schema[schemaName].splice(i,1);
         let newSchema = {$set:{schema:result.schema}}
         await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").updateOne({versionUUID},newSchema)
       }
+    }else if(action === "drop"){
+      await client.query('BEGIN')
+      await client.query(`
+      DROP TABLE  "${schemaName}_${versionUUID}_c";`)
+      await client.query(`
+      DROP TABLE  "${schemaName}_${versionUUID}";`)
+      delete  result.schema[schemaName]
+      let newSchema = {$set:{schema:result.schema}}
+      let neo = new neo4jDB()
+      let version = versionUUID.replace(/-/g,"")
+      await neo.Session_commit(`MATCH (n:_${version}:_schema{schemaName:"${schemaName}"}) delete n`,{})
+      await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").updateOne({versionUUID},newSchema)
     }else{
       throw new BadRequest("action not found")
     }
