@@ -21,10 +21,12 @@
   },
   "scripts": {
     "test": "npm run compile && npm run mocha",
+    "testapp": "npm run compile && npm run mochaapp",
     "dev": "ts-node-dev --no-notify src/",
     "start": "npm run compile && node lib/",
     "mocha": "ts-mocha \"test/**/*.ts\" --recursive --exit",
-    "compile": "shx rm -rf lib/ && tsc"
+    "mochaapp": "ts-mocha \"test/test_case/**/*.ts\" --timeout 10000 --recursive --exit",
+    "compile": "shx rm -rf lib/ && tsc "
   },
   "types": "lib/",
   "dependencies": {

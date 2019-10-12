@@ -103,13 +103,16 @@ export default class {
         })
     }
     commit(){
+        console.log("commit")
         return new Promise((resolve, reject) => {
             this.tx.commit().subscribe({
                 onCompleted:  () =>{
+                    console.log("onCompleted")
                   this.session.close();
                   resolve(true);
                 },
                 onError:  (error:string) =>{
+                    console.log("onError")
                     reject(error);
                 }
               });

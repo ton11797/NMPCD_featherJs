@@ -4,6 +4,7 @@ import { MongoClient } from 'mongodb';
 import { BadRequest } from '@feathersjs/errors';
 import postgresDB from '../../DAL/postgres'
 import neo4jDB from '../../DAL/neo4j'
+import { threadId } from 'worker_threads';
 interface Data {
 
 }
@@ -16,30 +17,21 @@ export class Schema implements ServiceMethods<Data> {
     this.options = options;
     this.app = app;
   }
-  async connectDB(){
-    this.DB = await MongoClient.connect(await this.app.get('mongodb'), { useNewUrlParser: true })
-  }
-  async closeDB(){
-    this.DB.close()
-  }
   async find (params?: Params): Promise<any> {
-    await this.connectDB()
-    let result = await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").find({}).toArray()
-    await this.closeDB()
-    console.log(result)
+    let result =  await (await this.app.get('mongoClient')).collection("Schema").find({}).toArray()    
     return {result};
   }
 
   async get (id: Id, params?: Params): Promise<Data> {
-    await this.connectDB()
+    
     let result = null
     if(params === {} || params === undefined){
-      result = await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").findOne({versionUUID:id})
+      result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID:id})
     }else{
       let {query} = params
-      result = await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").findOne({versionUUID:id,...query})
+      result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID:id,...query})
     }
-    await this.closeDB()
+    
     return {result};
   }
 
@@ -48,8 +40,8 @@ export class Schema implements ServiceMethods<Data> {
       return Promise.all(data.map(current => this.create(current, params)));
     }
     let {versionUUID,schemaName,action,fieldName,type} = data
-    await this.connectDB()
-    let result = await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").findOne({versionUUID})
+    
+    let result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID})
     if(result === null)throw new BadRequest("versionUUID not found")
     // if(type === "")throw new BadRequest("versionUUID not found")
     let db = new postgresDB()
@@ -90,7 +82,7 @@ export class Schema implements ServiceMethods<Data> {
         }
       }
       let newSchema = {$set:{schema:result.schema}}
-      await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").updateOne({versionUUID},newSchema)
+      await (await this.app.get('mongoClient')).collection("Schema").updateOne({versionUUID},newSchema)
     }else if(action === "delete"){
       if(result.schema[schemaName] === undefined)throw new BadRequest("schemaName not found")
       let found = false
@@ -111,7 +103,7 @@ export class Schema implements ServiceMethods<Data> {
         DROP COLUMN ${fieldName}`)
         result.schema[schemaName].splice(i,1);
         let newSchema = {$set:{schema:result.schema}}
-        await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").updateOne({versionUUID},newSchema)
+        await (await this.app.get('mongoClient')).collection("Schema").updateOne({versionUUID},newSchema)
       }
     }else if(action === "drop"){
       await client.query('BEGIN')
@@ -124,12 +116,12 @@ export class Schema implements ServiceMethods<Data> {
       let neo = new neo4jDB()
       let version = versionUUID.replace(/-/g,"")
       await neo.Session_commit(`MATCH (n:_${version}:_schema{schemaName:"${schemaName}"}) delete n`,{})
-      await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").updateOne({versionUUID},newSchema)
+      await (await this.app.get('mongoClient')).collection("Schema").updateOne({versionUUID},newSchema)
     }else{
       throw new BadRequest("action not found")
     }
     await client.query('COMMIT')
-    await this.closeDB()
+    
     console.log(result)
     return data;
   }

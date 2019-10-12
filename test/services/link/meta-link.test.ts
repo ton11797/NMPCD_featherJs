@@ -1,9 +1,9 @@
 import assert from 'assert';
 import app from '../../../src/app';
 
-describe('\'schema/create\' service', () => {
+describe('\'link/metaLink\' service', () => {
   it('registered the service', () => {
-    const service = app.service('schema/create');
+    const service = app.service('link/meta-link');
 
     assert.ok(service, 'Registered the service');
   });

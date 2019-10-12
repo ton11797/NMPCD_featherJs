@@ -27,12 +27,6 @@ export class NewVersion extends common implements ServiceMethods<any> {
     this.app = app;
     this.debug=true
   }
-  async connectDB(){
-    this.DB = await MongoClient.connect(await this.app.get('mongodb'), { useNewUrlParser: true })
-  }
-  async closeDB(){
-    this.DB.close()
-  }
   async create (data: Data, params?: Params): Promise<object> {
     let {versionName,refVersion} = data
         if(this.debug)console.log(versionName);
@@ -41,11 +35,11 @@ export class NewVersion extends common implements ServiceMethods<any> {
         let neo = new neo4jDB()
         if((await this.getUUID(versionName)).records.length !== 0)throw new BadRequest("duplicate versionName")
         await neo.Session_commit(`CREATE (:version {Param})`,{Param:{uuid,versionName,createDate:new Date().toLocaleString(),changeDate:new Date().toLocaleString(),status:"draft"}})
-        await this.connectDB()
-        
-        if(refVersion !== "" && this.notEmply(refVersion)){
-          let result = await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").findOne({versionUUID:refVersion})
+        if(refVersion !== "" && this.notEmply(refVersion) && refVersion !== undefined){
+          let result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID:refVersion})
           result.versionUUID = uuid
+          let version = uuid.replace(/-/g,"")
+          let versionref = refVersion.replace(/-/g,"")
           delete result._id
           let db = new postgresDB()
           let client:any = await db.open()
@@ -62,18 +56,28 @@ export class NewVersion extends common implements ServiceMethods<any> {
             await client.query(`
             CREATE TABLE "${arraySchema[i]}_${uuid}" AS 
             TABLE "${arraySchema[i]}_${refVersion}";`)
-            let version = uuid.replace(/-/g,"")
-            await neo.Session_commit(`CREATE (:_schema:_${version} {Param})`,{Param:{versionUUID:uuid,schemaName:arraySchema[i]}})
           }
           // await client.query('BEGIN')
           // await client.query(`CREATE TABLE "${schemaName}_${versionUUID}" (_uuid char(36),${fieldName} ${type})`)
-          await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").insertOne(result)
+          await (await this.app.get('mongoClient')).collection("Schema").insertOne(result)
           await neo.Session_commit(`MATCH (a:version {uuid:'${uuid}'}),(b:version {uuid:'${refVersion}'}) CREATE (b)-[r:new]->(a)`,{})
+          // await neo.beginTransaction()
+          await neo.Session_commit(`
+          MATCH(n:_${versionref}:_schema)
+          CALL apoc.refactor.cloneNodesWithRelationships([n]) yield input, output
+          SET n.versionUUID = '${uuid}'
+          REMOVE n:_${versionref}
+          SET n:_${version}
+          RETURN n
+          `,{})
+          // await neo.runTransaction(`return rootA`,{})
+          // await neo.runTransaction(``,{})
+          // await neo.commit()
+          console.log("neo")
           await client.query('COMMIT')
         }else{
-          await this.DB.db(this.app.get("mongodbDatabase")).collection("Schema").insertOne({versionUUID:uuid,schema:{}})
+          await (await this.app.get('mongoClient')).collection("Schema").insertOne({versionUUID:uuid,schema:{}})
         }
-        await this.closeDB()
     return {uuid}
   }
 
