@@ -1,0 +1,27 @@
+node {
+    def app
+
+    stage('Clone repository') {
+        /* Cloning the Repository to our Workspace */
+
+        checkout scm
+    }
+
+    stage('Test APP') {
+        sh "ls"
+        sh "npm install"
+        sh "npm run test"
+    }
+
+    stage('Build image') {
+        /* This builds the actual image */
+
+        app = docker.build("denice/jenkins_test")
+    }
+
+    stage('deploy') {
+        sh "docker kill CICD"
+        sh "docker rm CICD"
+        sh "docker run -d --name CICD  -p 3000:3000 denice/jenkins_test"
+    }
+}
