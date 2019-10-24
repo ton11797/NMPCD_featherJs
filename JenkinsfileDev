@@ -10,7 +10,7 @@ node {
     stage('Test APP') {
         sh "ls"
         sh "npm install"
-        sh "npm run test"
+        sh "npm run dev"
     }
 
     stage('Build image') {
