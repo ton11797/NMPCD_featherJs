@@ -19,8 +19,12 @@ node {
     }
 
     stage('deploy') {
-        sh "docker kill nmpcd_dev"
-        sh "docker rm nmpcd_dev"
+        try {
+            sh "docker kill nmpcd_dev"
+            sh "docker rm nmpcd_dev"
+        } catch (err) {
+            echo "nmpcd_dev not running."
+        }
         sh "docker run -d --name nmpcd_dev  -p 3030:3030 denice/nmpcd_dev"
     }
 }
