@@ -10,8 +10,9 @@ COPY package*.json ./
 USER node
 
 RUN npm install
+RUN npm compile
 
 COPY --chown=node:node . .
 
 EXPOSE 3030
-CMD ["pm2-runtime", "index.js"]
+CMD ["pm2-runtime", "./lib/index.js"]
