@@ -1,13 +1,13 @@
-FROM node:10-alpine
-RUN npm install pm2 -g
+FROM node:lts-alpine
+
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
 RUN npm install
 
 COPY . .
-RUN npm run compile
+
 EXPOSE 3030
 
-
-CMD ["node", "./lib"]
+CMD ["npm", "run", "start"]
