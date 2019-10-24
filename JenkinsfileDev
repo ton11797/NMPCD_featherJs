@@ -10,18 +10,17 @@ node {
     stage('Test APP') {
         sh "ls"
         sh "npm install"
-        sh "npm run dev"
     }
 
     stage('Build image') {
         /* This builds the actual image */
 
-        app = docker.build("denice/jenkins_test")
+        app = docker.build("denice/nmpcd_dev")
     }
 
     stage('deploy') {
-        sh "docker kill CICD"
-        sh "docker rm CICD"
-        sh "docker run -d --name CICD  -p 3000:3000 denice/jenkins_test"
+        sh "docker kill nmpcd_dev"
+        sh "docker rm nmpcd_dev"
+        sh "docker run -d --name nmpcd_dev  -p 3030:3030 denice/nmpcd_dev"
     }
 }
