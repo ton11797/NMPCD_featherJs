@@ -1,0 +1,40 @@
+{
+    "host": "localhost",
+    "port": 3030,
+    "public": "../public/",
+    "paginate": {
+      "default": 10,
+      "max": 50
+    },
+    "authentication": {
+      "entity": "user",
+      "service": "users",
+      "secret": "/tK8Nwug3M7hxB2dV1YjPf3C+Vs=",
+      "authStrategies": [
+        "jwt",
+        "local"
+      ],
+      "jwtOptions": {
+        "header": {
+          "typ": "access"
+        },
+        "audience": "https://denice.com",
+        "issuer": "denice",
+        "algorithm": "HS256",
+        "expiresIn": "1d"
+      },
+      "local": {
+        "usernameField": "email",
+        "passwordField": "password"
+      }
+    },
+    "postgres": "postgresql://apps:apps@postgres_dev:5433/nmpcd",
+    "neo4j": {
+      "connection": "bolt://neo4j_dev:7688",
+      "username": "apps",
+      "password": "apps"
+    },
+    "mongodb": "mongodb://mongo_dev:27018",
+    "mongodbDatabase": "nmpcd"
+  }
+  
