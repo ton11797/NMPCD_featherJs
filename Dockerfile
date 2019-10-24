@@ -10,7 +10,7 @@ COPY package*.json ./
 USER node
 
 RUN npm install
-RUN npm compile
+RUN npm run compile
 
 COPY --chown=node:node . .
 
