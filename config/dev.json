@@ -28,13 +28,13 @@
         "passwordField": "password"
       }
     },
-    "postgres": "postgresql://apps:apps@postgres_dev:5433/nmpcd",
+    "postgres": "postgresql://apps:apps@172.17.0.5:5433/nmpcd",
     "neo4j": {
-      "connection": "bolt://neo4j_dev:7688",
+      "connection": "bolt://172.17.0.7:7688",
       "username": "apps",
       "password": "apps"
     },
-    "mongodb": "mongodb://mongo_dev:27018",
+    "mongodb": "mongodb://172.17.0.2:27018",
     "mongodbDatabase": "nmpcd"
   }
   
