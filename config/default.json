@@ -36,7 +36,6 @@
   },
   "mongodb": "mongodb://10.1.1.144:27018",
   "mongodbDatabase": "nmpcd",
-  "debug":{
-    "level":0
-  }
+  "debugLevel":100
+  
 }
