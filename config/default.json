@@ -28,12 +28,15 @@
       "passwordField": "password"
     }
   },
-  "postgres": "postgresql://apps:apps@10.1.1.105:5433/nmpcd",
+  "postgres": "postgresql://apps:apps@10.1.1.144:5433/nmpcd",
   "neo4j": {
-    "connection": "bolt://10.1.1.105:7688",
+    "connection": "bolt://10.1.1.144:7688",
     "username": "apps",
     "password": "apps"
   },
-  "mongodb": "mongodb://10.1.1.105:27018",
-  "mongodbDatabase": "nmpcd"
+  "mongodb": "mongodb://10.1.1.144:27018",
+  "mongodbDatabase": "nmpcd",
+  "debug":{
+    "level":0
+  }
 }

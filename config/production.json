@@ -1,5 +1,5 @@
 {
-  "host": "localhost",
+  "host": "0.0.0.0",
   "port": 3030,
   "public": "../public/",
   "paginate": {
@@ -28,12 +28,12 @@
       "passwordField": "password"
     }
   },
-  "postgres": "postgresql://apps:apps@localhost:32771/nmpcd",
+  "postgres": "postgresql://apps:apps@10.1.1.144:32768/nmpcd",
   "neo4j": {
-    "connection": "bolt://localhost",
+    "connection": "bolt://10.1.1.144",
     "username": "apps",
     "password": "apps"
   },
-  "mongodb": "mongodb://localhost:32770",
+  "mongodb": "mongodb://10.1.1.144:32769",
   "mongodbDatabase": "nmpcd"
 }
