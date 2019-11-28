@@ -11,6 +11,7 @@ import versionControlGetVersion from './versionControl/get-version/get-version.s
 import testTest from './test/test/test.service';
 import linkMetaLink from './link/meta-link/meta-link.service';
 import linkDataLink from './link/data-link/data-link.service';
+import dataSearchData from './data/search-data/search-data.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -26,4 +27,5 @@ export default function (app: Application) {
   app.configure(testTest);
   app.configure(linkMetaLink);
   app.configure(linkDataLink);
+  app.configure(dataSearchData);
 }
