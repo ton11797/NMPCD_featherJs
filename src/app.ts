@@ -19,6 +19,7 @@ import channels from './channels';
 import authentication from './authentication';
 import sequelize from './sequelize';
 import mongodb from './mongodb';
+import postgres from './postgres'
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());
@@ -42,6 +43,7 @@ app.configure(socketio());
 app.configure(sequelize);
 
 app.configure(mongodb);
+app.configure(postgres);
 
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);
@@ -56,5 +58,8 @@ app.use(express.notFound());
 app.use(express.errorHandler({ logger } as any));
 
 app.hooks(appHooks);
-
+console.log("Config")
+console.log("mongodb",app.get('mongodb'))
+console.log("neo4j",app.get('neo4j'))
+console.log("postgres",app.get('postgres'))
 export default app;
