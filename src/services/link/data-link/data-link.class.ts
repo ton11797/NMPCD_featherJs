@@ -26,17 +26,21 @@ export class DataLink implements ServiceMethods<Data> {
   }
 
   async create (data: any, params?: Params): Promise<any> {
-    console.log("linked")
-
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","data-link")
     let {node1,node2,uuid1,uuid2,version} = data
     let versionSelect = version.replace(/-/g,"")
 
     let neo = new neo4jDB()  
     // await neo.beginTransaction()
     let linkedMeta:any = await neo.Session_commit(`
-    MATCH (n1:_${node1}:_schema {uuid:"${uuid1}"})-[r]-(n2:_${node2}:_schema {uuid:"${uuid2}"})
+    MATCH (n1:_schema:_${versionSelect} {schemaName:"${node1}"})-[r]-(n2:_schema:_${versionSelect} {schemaName:"${node2}"})
     RETURN type(r)
     `,{})
+    debug.logging(99,"data-link","neo "+`
+    MATCH (n1:_schema:_${versionSelect} {schemaName:"${node1}"})-[r]-(n2:_schema:_${versionSelect} {schemaName:"${node2}"})
+    RETURN type(r)
+    `)
     if(linkedMeta.records.length ===0){
       throw new BadRequest("Meta link not found")
     }
@@ -45,11 +49,13 @@ export class DataLink implements ServiceMethods<Data> {
     RETURN type(r)
     `,{})
     if(linked.records.length ===0){
+      debug.logging(12,"data-link","no relation")
       await neo.Session_commit(`
       MATCH (n1:_${node1}:_data {uuid:"${uuid1}"}),(n2:_${node2}:_data {uuid:"${uuid2}"})
       CREATE (n1)-[r:RELTYPE{_${versionSelect}:""}]->(n2)
       RETURN n1,n2`,{})
     }else{
+      debug.logging(12,"data-link","have relation")
       await neo.Session_commit(`
       MATCH (n1:_${node1}:_data {uuid:"${uuid1}"})-[r:RELTYPE]-(n2:_${node2}:_data {uuid:"${uuid2}"})
       SET r._${versionSelect} = ""
