@@ -63,6 +63,15 @@ let importTest = [
     {"schemaName":"STD24","value":{"STD_CODE":"1", "Version":"1", "RegNo":"1", "T_Code":"1", "TradeName":"1", "Item":"1", "Company":"1"}},
     {"schemaName":"STD24","value":{"STD_CODE":"2", "Version":"2", "RegNo":"2", "T_Code":"2", "TradeName":"2", "Item":"2", "Company":"2"}},
 ]
+
+let creatMetaLink = [
+    ["SUB","VTM"],
+    ["VTM","GP"],
+    ["GP","GPU"],
+    ["GP","TP"],
+    ["TP","TPU"],
+    ["TP","STD24"],
+]
 axios.defaults.baseURL = API;
 async function runTest(){
     await axios.post('/users',register).then((data)=>{
@@ -127,6 +136,22 @@ async function runTest(){
         }
         console.log(`>>>>importTest data  Pass`)
     }
+    for(let i =0;i<creatMetaLink.length;i++){
+        let request = {
+            "node1":creatMetaLink[i][0],
+            "node2":creatMetaLink[i][1],
+            "version":uuidV1
+        }
+        await axios.post('/link/meta-link',request).then((data)=>{
+
+        }).catch((data)=>{
+            console.log("XXXXXmeta-link Fail")
+            console.log(data.response.data)
+        });
+    }
+
+
+/////////////////////////////////////////////////////////////////////////////
     let resetAll = readline.question("resetAll data(y/n)?");
     if(resetAll ==='y'){
         await axios.post('/systemMange/reset',{}).then((data)=>{
@@ -136,6 +161,8 @@ async function runTest(){
             console.log(data.response.data)
         });
     }
+
+    
 }
 runTest()
 console.log("Run test complete")
