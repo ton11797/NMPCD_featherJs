@@ -20,10 +20,11 @@ import authentication from './authentication';
 import sequelize from './sequelize';
 import mongodb from './mongodb';
 import postgres from './postgres'
+import debug from './common/debug'
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());
-
+console.log("\x1b[32m========= App starting =========\x1b[0m")
 // Load app configuration
 app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
@@ -44,6 +45,7 @@ app.configure(sequelize);
 
 app.configure(mongodb);
 app.configure(postgres);
+app.configure(debug);
 
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);
@@ -56,10 +58,11 @@ app.configure(channels);
 // Configure a middleware for 404s and the error handler
 app.use(express.notFound());
 app.use(express.errorHandler({ logger } as any));
-
 app.hooks(appHooks);
-console.log("Config")
-console.log("mongodb",app.get('mongodb'))
-console.log("neo4j",app.get('neo4j'))
-console.log("postgres",app.get('postgres'))
+console.log("\x1b[32mConfig\x1b[0m")
+console.log("\x1b[32mmongodb\x1b[0m",app.get('mongodb'))
+console.log("\x1b[32mneo4j\x1b[0m",app.get('neo4j').connection)
+console.log("\x1b[32mpostgres\x1b[0m",app.get('postgres'))
+console.log("\x1b[32m========= App started =========\x1b[0m")
+
 export default app;
