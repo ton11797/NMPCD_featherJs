@@ -2,7 +2,6 @@ import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/f
 import { Application } from '../../declarations';
 import { MongoClient } from 'mongodb';
 import { BadRequest } from '@feathersjs/errors';
-import postgresDB from '../../DAL/postgres'
 import neo4jDB from '../../DAL/neo4j'
 import { threadId } from 'worker_threads';
 interface Data {
@@ -44,8 +43,7 @@ export class Schema implements ServiceMethods<Data> {
     let result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID})
     if(result === null)throw new BadRequest("versionUUID not found")
     // if(type === "")throw new BadRequest("versionUUID not found")
-    let db = new postgresDB()
-    let client:any = await db.open()
+    let client:any =  await this.app.get('postgresClient')
     if(action === "create"){
       let fieldDetail = {fieldName,type}
       
@@ -100,6 +98,9 @@ export class Schema implements ServiceMethods<Data> {
         await client.query('BEGIN')
         await client.query(`
         ALTER TABLE "${schemaName}_${versionUUID}"
+        DROP COLUMN ${fieldName}`)
+        await client.query(`
+        ALTER TABLE "${schemaName}_${versionUUID}_c"
         DROP COLUMN ${fieldName}`)
         result.schema[schemaName].splice(i,1);
         let newSchema = {$set:{schema:result.schema}}

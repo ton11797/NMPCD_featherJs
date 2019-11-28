@@ -6,6 +6,7 @@ import neo4jDB from '../../../DAL/neo4j'
 import postgresDB from '../../../DAL/postgres'
 import uuidv1 from 'uuid/v1'
 import { MongoClient } from 'mongodb';
+import logger from '../../../logger';
 interface Data {
   versionName:string,
   refVersion?:string
@@ -42,7 +43,7 @@ export class NewVersion extends common implements ServiceMethods<any> {
           let versionref = refVersion.replace(/-/g,"")
           delete result._id
           let db = new postgresDB()
-          let client:any = await db.open()
+          let client:any = await this.app.get('postgresClient')
           let arraySchema =Object.keys(result.schema)
           await client.query('BEGIN')
           for(let i=0;i<arraySchema.length;i++){

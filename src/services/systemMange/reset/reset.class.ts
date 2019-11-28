@@ -26,7 +26,7 @@ export class Reset implements ServiceMethods<Data> {
     await Mdb.DB.db(this.app.get("mongodbDatabase")).collection("system").insertOne({})
     await Mdb.connectDB()
     let Pdb = new postgresDB()
-    let client:any = await Pdb.open()
+    let client:any = await this.app.get('postgresClient')
     await client.query('BEGIN')
     await client.query(`drop schema public cascade;`)
     await client.query(`create schema public;`)

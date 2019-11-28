@@ -2,7 +2,6 @@ import { Id, NullableId, Paginated, Params } from '@feathersjs/feathers';
 import { Application } from '../../../declarations';
 import { MongoClient } from 'mongodb';
 import { BadRequest } from '@feathersjs/errors';
-import postgresDB from '../../../DAL/postgres'
 import neo4jDB from '../../../DAL/neo4j'
 import uuidv1 from 'uuid/v1'
 interface Data {}
@@ -43,8 +42,7 @@ export class Insert implements ServiceMethods<Data> {
     if(insert !== ""){
       insert = insert.substr(2)
       insert_col = insert_col.substr(2)
-      let db = new postgresDB()
-      let client:any = await db.open()
+      let client:any = await this.app.get('postgresClient')
       await client.query('BEGIN')
       await client.query(`INSERT INTO "${schemaName}_${versionUUID}" (${insert_col},_uuid) VALUES (${insert},'${uuid}')`) 
       let neo = new neo4jDB()  
