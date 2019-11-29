@@ -48,7 +48,7 @@ export class InsertConfirm implements ServiceMethods<Data> {
       insert_col = insert_col.substr(2)
       let client:any = await this.app.get('postgresClient')
       await client.query('BEGIN')
-      await client.query(`INSERT INTO "${schemaName}_${versionUUID}_c" (${insert_col},_uuid,_count,_user,_status) VALUES (${insert},'${uuid}',0,'{}',0)`) 
+      await client.query(`INSERT INTO "${schemaName}_${versionUUID}_c" (${insert_col},_uuid,_count,_user,_status,_action) VALUES (${insert},'${uuid}',0,'{}',0,0)`) 
       await client.query('COMMIT')
     }else{
 
