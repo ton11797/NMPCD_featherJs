@@ -28,9 +28,14 @@ export class SearchData implements ServiceMethods<Data> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
+    let debug = this.app.get('debug')
+    // debug.logging(1,"test","test")
+    // debug.logging(7,"test","test")
+    // debug.logging(12,"test","test")
+    // debug.logging(99,"test","test")
     let {schemaName,versionUUID,condition} = data
     let client:any =  await this.app.get('postgresClient')
-    await client.query('BEGIN')
+    // await client.query('BEGIN')
     let where = ''
     let conditionKey = Object.keys(condition)
     for(let i=0;i<conditionKey.length;i++){
