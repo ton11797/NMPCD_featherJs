@@ -22,6 +22,8 @@ const createVersion1 = {
 	"versionName":`V1_test${random}`
 }
 let uuidV1 = ""
+let uuidV2 = ""
+let uuidV3 = ""
 
 const createSchema = [
     {
@@ -204,31 +206,54 @@ async function Run_linkData(){
         });  
     }
 }
+async function Run_reset(){
+    await axios.post('/systemMange/reset',{}).then((data)=>{
+        console.log(`>>>>reset Pass`)
+    }).catch((data)=>{
+        console.log("XXXXXreset Fail")
+        console.log(data.response.data)
+    });
+}
+async function Run_createVersionNew(){
+    const createVersion2 = {
+        "versionName":`V2_test${random}`
+    }
+    const createVersion3Ref = {
+        "versionName":`V2_testRef${random}`,
+        "refVersion":uuidV1
+    }
+    await axios.post('/versionControl/new-version',createVersion2).then((data)=>{
+        console.log(">>>>createVersion2 Pass")
+        uuidV2  = data.data.uuid
+        console.log(">>>>uuidV2 ",uuidV2)
+    }).catch((data)=>{
+        console.log("XXXXXcreateVersion2 Fail")
+        console.log(data.response.data)
+    });
+    await axios.post('/versionControl/new-version',createVersion3Ref).then((data)=>{
+        console.log(">>>>createVersion3 Pass")
+        uuidV3  = data.data.uuid
+        console.log(">>>>uuidV3 ",uuidV3)
+    }).catch((data)=>{
+        console.log("XXXXXcreateVersion3 Fail")
+        console.log(data.response.data)
+    });
+}
 async function runTest(){
     await Run_register()
     await Run_login()
     await Run_createVersion1()
     await Run_createSchema()    
     if(!runall)name = readline.question("Continues?");
-    let realData = "n"
-    if(!runall)realData = readline.question("import real data(y/n)?");
-    if(realData === 'y'){
-    }else{
-        await Run_importTest()
-    }
+    await Run_importTest()
     await Run_creatMetaLink()
-
     await Run_TestSearch()
     await Run_linkData()
+    if(!runall)name = readline.question("Continues?");
+    await Run_createVersionNew()
 /////////////////////////////////////////////////////////////////////////////
-    let resetAll = readline.question("resetAll data(y/n)?");
-    if(resetAll ==='y'){
-        await axios.post('/systemMange/reset',{}).then((data)=>{
-            console.log(`>>>>reset Pass`)
-        }).catch((data)=>{
-            console.log("XXXXXreset Fail")
-            console.log(data.response.data)
-        });
+    if(readline.question("resetAll data(y/n)?") ==='y'){
+        await Run_reset()
     }
 
     
