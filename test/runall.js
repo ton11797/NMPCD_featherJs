@@ -252,6 +252,72 @@ async function Run_insertConfirm(version){
     }
     console.log(`>>>>insertConfirm data  Pass`)
 }
+async function Run_editData(){
+    let request = {
+        "versionUUID":uuidV3,
+        "schemaName":"GP",
+        "uuid":importTest[0].uuid,
+        "data":{
+            "FSN":"testEdit",
+            "GPID":"testEdit"
+        }
+    }
+    await axios.post('/data/edit-data',request).then((data)=>{
+
+    }).catch((data)=>{
+        console.log("XXXXXedit-data Fail")
+        console.log(data.response.data)
+    });
+    let requestSearch = {
+        "schemaName":importTest[0].schemaName,
+        "versionUUID":uuidV3,
+        "condition":{
+            _uuid:importTest[0].uuid
+        }
+    }
+    await axios.post('/data/search-data',requestSearch).then((data)=>{
+        if(data.data.rows[0].gpid === 'testEdit' && data.data.rows[0].fsn === 'testEdit'){
+            console.log(">>>>edit-data pass")
+        }else{
+            console.log("XXXXXedit-data Fail")
+        }
+        
+    }).catch((data)=>{
+        console.log("XXXXXsearch-data Fail")
+        console.log(request)
+    }); 
+
+}
+async function Run_deleteData(){
+    let request ={
+        "versionUUID":uuidV3,
+        "schemaName":importTest[1].schemaName,
+        "uuid":importTest[1].uuid
+    }
+    await axios.post('/data/delete-data',request).then((data)=>{
+
+    }).catch((data)=>{
+        console.log("XXXXXdelete-data Fail")
+        console.log(data.response.data)
+    });
+    let requestSearch = {
+        "schemaName":importTest[1].schemaName,
+        "versionUUID":uuidV3,
+        "condition":{
+            _uuid:importTest[1].uuid
+        }
+    }
+    await axios.post('/data/search-data',requestSearch).then((data)=>{
+        if(data.data.rows.length === 0){
+            console.log(">>>>delete-data pass")
+        }else{
+            console.log("XXXXXdelete-data Fail")
+        }
+    }).catch((data)=>{
+        console.log("XXXXXsearch-data Fail")
+        console.log(request)
+    }); 
+}
 async function runTest(){
     await Run_register()
     await Run_login()
@@ -266,6 +332,8 @@ async function runTest(){
     await Run_createVersionNew()
     await Run_insertConfirm(uuidV1)
     await Run_insertConfirm(uuidV3)
+    await Run_editData()
+    await Run_deleteData()
 /////////////////////////////////////////////////////////////////////////////
     if(readline.question("resetAll data(y/n)?") ==='y'){
         await Run_reset()
