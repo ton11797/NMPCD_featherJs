@@ -27,7 +27,7 @@ export class DataLink implements ServiceMethods<Data> {
 
   async create (data: any, params?: Params): Promise<any> {
     let debug = this.app.get('debug')
-    debug.logging(1,"API_call","data-link")
+    debug.logging(1,"API_call","data-link") 
     let {node1,node2,uuid1,uuid2,version} = data
     let versionSelect = version.replace(/-/g,"")
 
