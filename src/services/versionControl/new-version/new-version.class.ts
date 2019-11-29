@@ -29,6 +29,8 @@ export class NewVersion extends common implements ServiceMethods<any> {
     this.debug=true
   }
   async create (data: Data, params?: Params): Promise<object> {
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","new-version")
     let {versionName,refVersion} = data
         if(this.debug)console.log(versionName);
         if(this.debug)console.log(refVersion);
@@ -70,6 +72,11 @@ export class NewVersion extends common implements ServiceMethods<any> {
           REMOVE n:_${versionref}
           SET n:_${version}
           RETURN n
+          `,{})
+          await neo.Session_commit(`
+          MATCH (n:_schema:_${versionref})-[r]-(n2:_schema:_${version}) 
+          delete r
+          RETURN r
           `,{})
           // await neo.runTransaction(`return rootA`,{})
           // await neo.runTransaction(``,{})
