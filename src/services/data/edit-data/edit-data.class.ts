@@ -1,7 +1,12 @@
 import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/feathers';
 import { Application } from '../../../declarations';
-
-interface Data {}
+import { BadRequest } from '@feathersjs/errors';
+interface Data {
+  versionUUID:string,
+  schemaName:string,
+  uuid:string,
+  data:object
+}
 
 interface ServiceOptions {}
 
@@ -18,18 +23,43 @@ export class EditData implements ServiceMethods<Data> {
     return [];
   }
 
-  async get (id: Id, params?: Params): Promise<Data> {
+  async get (id: Id, params?: Params): Promise<any> {
     return {
       id, text: `A new message with ID: ${id}!`
     };
   }
 
-  async create (data: Data, params?: Params): Promise<Data> {
+  async create (data: Data|Data[], params?: Params): Promise<any> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
-
-    return data;
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","edit-data") 
+    let {versionUUID,schemaName,uuid } = data
+    let updateData:any = data.data
+    let result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID})
+    if(result === null)throw new BadRequest("versionUUID not found")
+    if(result.schema[schemaName] === undefined)throw new BadRequest("schemaName not found")
+    let update =""
+    for(let i=0;i<result.schema[schemaName].length;i++){
+      if(updateData[result.schema[schemaName][i].fieldName] !== undefined){
+        update = `${update} ,${result.schema[schemaName][i].fieldName} = '${updateData[result.schema[schemaName][i].fieldName]}'`
+      }
+    }
+    update = update.substr(2)
+    let query = `UPDATE "${schemaName}_${versionUUID}"
+    SET ${update}
+    WHERE _uuid = '${uuid}'`
+    debug.logging(99,"edit-data","postgress "+query)
+    let client:any = await this.app.get('postgresClient')
+    let resultQ = await client.query(query) 
+    delete resultQ.command
+    delete resultQ.oid
+    delete resultQ._parsers
+    delete resultQ._types
+    delete resultQ.RowCtor
+    delete resultQ.rowAsArray
+    return resultQ;
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
@@ -40,7 +70,7 @@ export class EditData implements ServiceMethods<Data> {
     return data;
   }
 
-  async remove (id: NullableId, params?: Params): Promise<Data> {
+  async remove (id: NullableId, params?: Params): Promise<any> {
     return { id };
   }
 }
