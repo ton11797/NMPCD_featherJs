@@ -47,6 +47,12 @@ export class SearchData implements ServiceMethods<Data> {
     }
     console.log(`SELECT * FROM ${schemaName}_${versionUUID} WHERE ${where}`)
     let searchData = await client.query(`SELECT * FROM "${schemaName}_${versionUUID}" WHERE ${where}`)
+    delete searchData.command
+    delete searchData.oid
+    delete searchData._parsers
+    delete searchData._types
+    delete searchData.RowCtor
+    delete searchData.rowAsArray
     return searchData;
   }
 
