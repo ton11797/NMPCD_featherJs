@@ -239,6 +239,19 @@ async function Run_createVersionNew(){
         console.log(data.response.data)
     });
 }
+async function Run_insertConfirm(version){
+    for(let i =0;i<importTest.length;i++){
+        let request = importTest[i]
+        request.versionUUID = version 
+        await axios.post('/data/insert-confirm',request).then((data)=>{
+
+        }).catch((data)=>{
+            console.log("XXXXXinsertConfirm data Fail")
+            console.log(data.response.data)
+        });
+    }
+    console.log(`>>>>insertConfirm data  Pass`)
+}
 async function runTest(){
     await Run_register()
     await Run_login()
@@ -251,6 +264,8 @@ async function runTest(){
     await Run_linkData()
     if(!runall)name = readline.question("Continues?");
     await Run_createVersionNew()
+    await Run_insertConfirm(uuidV1)
+    await Run_insertConfirm(uuidV3)
 /////////////////////////////////////////////////////////////////////////////
     if(readline.question("resetAll data(y/n)?") ==='y'){
         await Run_reset()
