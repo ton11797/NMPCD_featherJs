@@ -45,21 +45,17 @@ export class DataLink implements ServiceMethods<Data> {
       throw new BadRequest("Meta link not found")
     }
     let linked:any = await neo.Session_commit(`
-    MATCH (n1:_${node1}:_data {uuid:"${uuid1}"})-[r]-(n2:_${node2}:_data {uuid:"${uuid2}"})
+    MATCH (n1:_${node1}:_data {uuid:"${uuid1}"})-[r:_${versionSelect}]-(n2:_${node2}:_data {uuid:"${uuid2}"})
     RETURN type(r)
     `,{})
     if(linked.records.length ===0){
       debug.logging(12,"data-link","no relation")
       await neo.Session_commit(`
       MATCH (n1:_${node1}:_data {uuid:"${uuid1}"}),(n2:_${node2}:_data {uuid:"${uuid2}"})
-      CREATE (n1)-[r:RELTYPE{_${versionSelect}:""}]->(n2)
+      CREATE (n1)-[:_${versionSelect}]->(n2)
       RETURN n1,n2`,{})
     }else{
-      debug.logging(12,"data-link","have relation")
-      await neo.Session_commit(`
-      MATCH (n1:_${node1}:_data {uuid:"${uuid1}"})-[r:RELTYPE]-(n2:_${node2}:_data {uuid:"${uuid2}"})
-      SET r._${versionSelect} = ""
-      RETURN n1,n2`,{})
+      return data
     }
     return data;
   }
