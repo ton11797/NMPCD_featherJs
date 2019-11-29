@@ -1,7 +1,11 @@
 import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/feathers';
 import { Application } from '../../../declarations';
 
-interface Data {}
+interface Data {
+  versionUUID:string,
+  schemaName:string,
+  uuid:string
+}
 
 interface ServiceOptions {}
 
@@ -18,18 +22,26 @@ export class DeleteData implements ServiceMethods<Data> {
     return [];
   }
 
-  async get (id: Id, params?: Params): Promise<Data> {
+  async get (id: Id, params?: Params): Promise<any> {
     return {
       id, text: `A new message with ID: ${id}!`
     };
   }
 
-  async create (data: Data, params?: Params): Promise<Data> {
+  async create (data: Data|Data[], params?: Params): Promise<any> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
-
-    return data;
+    let {versionUUID,schemaName,uuid} = data
+    let client:any = await this.app.get('postgresClient')
+    let result = await client.query(`DELETE FROM "${schemaName}_${versionUUID}" WHERE _uuid = '${uuid}'`) 
+    delete result.command
+    delete result.oid
+    delete result._parsers
+    delete result._types
+    delete result.RowCtor
+    delete result.rowAsArray
+    return result;
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
@@ -40,7 +52,7 @@ export class DeleteData implements ServiceMethods<Data> {
     return data;
   }
 
-  async remove (id: NullableId, params?: Params): Promise<Data> {
+  async remove (id: NullableId, params?: Params): Promise<any> {
     return { id };
   }
 }
