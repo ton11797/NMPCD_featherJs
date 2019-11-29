@@ -1,6 +1,5 @@
 import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/feathers';
 import { Application } from '../../declarations';
-import { MongoClient } from 'mongodb';
 import { BadRequest } from '@feathersjs/errors';
 import neo4jDB from '../../DAL/neo4j'
 import { threadId } from 'worker_threads';
@@ -11,7 +10,6 @@ interface ServiceOptions {}
 export class Schema implements ServiceMethods<Data> {
   app: Application;
   options: ServiceOptions;
-  DB!: MongoClient;
   constructor (options: ServiceOptions = {}, app: Application) {
     this.options = options;
     this.app = app;
@@ -50,7 +48,7 @@ export class Schema implements ServiceMethods<Data> {
       if(result.schema[schemaName] === undefined){
         await client.query('BEGIN')
         await client.query(`CREATE TABLE "${schemaName}_${versionUUID}" (_uuid char(36),${fieldName} ${type})`)
-        await client.query(`CREATE TABLE "${schemaName}_${versionUUID}_c" (_uuid char(36),${fieldName} ${type})`)
+        await client.query(`CREATE TABLE "${schemaName}_${versionUUID}_c" (_uuid char(36),_count numeric,_user json,_status numeric,${fieldName} ${type})`)
         let neo = new neo4jDB()
         let version = versionUUID.replace(/-/g,"")
         await neo.Session_commit(`CREATE (:_schema:_${version} {Param})`,{Param:{versionUUID,schemaName}})

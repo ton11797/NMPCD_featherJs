@@ -1,6 +1,5 @@
 import { Id, NullableId, Paginated, Params } from '@feathersjs/feathers';
 import { Application } from '../../../declarations';
-import { MongoClient } from 'mongodb';
 import { BadRequest } from '@feathersjs/errors';
 import neo4jDB from '../../../DAL/neo4j'
 import uuidv1 from 'uuid/v1'
@@ -14,7 +13,6 @@ interface ServiceMethods<T> {
 export class Insert implements ServiceMethods<Data> {
   app: Application;
   options: ServiceOptions;
-  DB!: MongoClient;
   constructor (options: ServiceOptions = {}, app: Application) {
     this.options = options;
     this.app = app;

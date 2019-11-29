@@ -1,0 +1,42 @@
+MATCH (rootA:`_2090b5c0ecd311e99078870163de4d73`:`_schema`)
+CALL apoc.refactor.cloneNodes(rootA)
+MATCH  path = (rootA)-[*]->(node)
+RETURN rootA
+create n
+
+
+MATCH  (rootA:xyz_event{id:'e101'}),
+        (rootB:abc_event{id: 'e101'})
+MATCH path = (rootA)-[*]->(node)
+WITH rootA, rootB, collect(path) as paths
+CALL apoc.refactor.cloneSubgraphFromPaths(paths, {standinNodes:[[rootA, rootB]]}) YIELD input, output, error
+RETURN input, output, error
+
+
+Reset = "\x1b[0m"
+Bright = "\x1b[1m"
+Dim = "\x1b[2m"
+Underscore = "\x1b[4m"
+Blink = "\x1b[5m"
+Reverse = "\x1b[7m"
+Hidden = "\x1b[8m"
+
+FgBlack = "\x1b[30m"
+FgRed = "\x1b[31m"
+FgGreen = "\x1b[32m"
+FgYellow = "\x1b[33m"
+FgBlue = "\x1b[34m"
+FgMagenta = "\x1b[35m"
+FgCyan = "\x1b[36m"
+FgWhite = "\x1b[37m"
+
+BgBlack = "\x1b[40m"
+BgRed = "\x1b[41m"
+BgGreen = "\x1b[42m"
+BgYellow = "\x1b[43m"
+BgBlue = "\x1b[44m"
+BgMagenta = "\x1b[45m"
+BgCyan = "\x1b[46m"
+BgWhite = "\x1b[47m"
+
+match p = (s:_SUB:_data:_a50c0de0126c11ea8c4065e83624e5e0)-[:RELTYPE*1..20]->(e:_GPU:_data:_a50c0de0126c11ea8c4065e83624e5e0) return p

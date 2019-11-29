@@ -12,6 +12,7 @@ import testTest from './test/test/test.service';
 import linkMetaLink from './link/meta-link/meta-link.service';
 import linkDataLink from './link/data-link/data-link.service';
 import dataSearchData from './data/search-data/search-data.service';
+import dataInsertConfirm from './data/insert-confirm/insert-confirm.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -28,4 +29,5 @@ export default function (app: Application) {
   app.configure(linkMetaLink);
   app.configure(linkDataLink);
   app.configure(dataSearchData);
+  app.configure(dataInsertConfirm);
 }
