@@ -20,6 +20,7 @@ import dataDeleteData from './data/delete-data/delete-data.service';
 import dataEditData from './data/edit-data/edit-data.service';
 import dataEditConfirm from './data/edit-confirm/edit-confirm.service';
 import dataDeleteConfirm from './data/delete-confirm/delete-confirm.service';
+import dataSearchRelate from './data/search-relate/search-relate.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -44,4 +45,5 @@ export default function (app: Application) {
   app.configure(dataEditData);
   app.configure(dataEditConfirm);
   app.configure(dataDeleteConfirm);
+  app.configure(dataSearchRelate);
 }
