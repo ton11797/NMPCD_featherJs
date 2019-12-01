@@ -43,6 +43,12 @@ export class Reset implements ServiceMethods<Data> {
     MINVALUE 1
     MAXVALUE 2147483647
     CACHE 1;`)
+    await client.query(`CREATE SEQUENCE public.uuid_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;`)
     await client.query(`CREATE SEQUENCE public.sequelize_id_seq
     INCREMENT 1
     START 1

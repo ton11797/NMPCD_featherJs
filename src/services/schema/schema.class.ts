@@ -48,7 +48,7 @@ export class Schema implements ServiceMethods<Data> {
       if(result.schema[schemaName] === undefined){
         await client.query('BEGIN')
         await client.query(`CREATE TABLE "${schemaName}_${versionUUID}" (_uuid char(36),${fieldName} ${type})`)
-        await client.query(`CREATE TABLE "${schemaName}_${versionUUID}_c" (_uuid char(36),_count numeric,_user json,_status numeric,_action numeric,${fieldName} ${type})`)
+        await client.query(`CREATE TABLE "${schemaName}_${versionUUID}_c" (_id integer NOT NULL DEFAULT nextval('uuid_id_seq'::regclass),_uuid char(36),_count numeric,_user json,_status numeric,_action numeric,${fieldName} ${type})`)
         let neo = new neo4jDB()
         let version = versionUUID.replace(/-/g,"")
         await neo.Session_commit(`CREATE (:_schema:_${version} {Param})`,{Param:{versionUUID,schemaName}})
