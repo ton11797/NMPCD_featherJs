@@ -20,6 +20,7 @@ import authentication from './authentication';
 import sequelize from './sequelize';
 import mongodb from './mongodb';
 import postgres from './postgres'
+import neo4j from './neo4j'
 import debug from './common/debug'
 // Don't remove this comment. It's needed to format import lines nicely.
 
@@ -31,8 +32,8 @@ app.configure(configuration());
 app.use(helmet());
 app.use(cors());
 app.use(compress());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({ extended: true ,limit: '50mb'}));
 app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
 // Host the public folder
 app.use('/', express.static(app.get('public')));
@@ -46,6 +47,7 @@ app.configure(sequelize);
 app.configure(mongodb);
 app.configure(postgres);
 app.configure(debug);
+// app.configure(neo4j);
 
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);

@@ -49,7 +49,7 @@ export class NewVersion extends common implements ServiceMethods<any> {
           let arraySchema =Object.keys(result.schema)
           await client.query('BEGIN')
           for(let i=0;i<arraySchema.length;i++){
-            console.log(arraySchema[i])
+            // console.log(arraySchema[i])
             //copy confirm schema without data
             await client.query(`
             CREATE TABLE "${arraySchema[i]}_${uuid}_c" AS 
@@ -81,7 +81,7 @@ export class NewVersion extends common implements ServiceMethods<any> {
           // await neo.runTransaction(`return rootA`,{})
           // await neo.runTransaction(``,{})
           // await neo.commit()
-          console.log("neo")
+          // console.log("neo")
           await client.query('COMMIT')
         }else{
           await (await this.app.get('mongoClient')).collection("Schema").insertOne({versionUUID:uuid,schema:{}})

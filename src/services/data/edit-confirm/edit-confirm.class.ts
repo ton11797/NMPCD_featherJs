@@ -51,7 +51,7 @@ export class EditConfirm implements ServiceMethods<Data> {
       column = `${column} ,${result.schema[schemaName][i].fieldName} `
     }
     let sql = `INSERT INTO "${schemaName}_${versionUUID}_c" (_uuid${column},_count,_user,_action,_status)
-    SELECT _uuid${columnUpdate} ,0 as _count ,'{}' as _user, 1 as _action ,0 as _status FROM "${schemaName}_${versionUUID}"
+    SELECT _uuid${columnUpdate} ,0 as _count ,'{}' as _user,0 as _approved, 1 as _action ,0 as _status FROM "${schemaName}_${versionUUID}"
     WHERE _uuid = '${uuid}'
     `
     debug.logging(99,"data-link","postgres "+sql)

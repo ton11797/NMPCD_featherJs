@@ -10,7 +10,7 @@ export default class{
     }
     async getNode(uuid:string):Promise<any>{
         let neo = new neo4jDB()
-        console.log("in")
+        // console.log("in")
         return await neo.Session_commit(`MATCH (n:version {uuid:'${uuid}'}) RETURN n`,{})
     }
 }

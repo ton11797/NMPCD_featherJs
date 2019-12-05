@@ -25,6 +25,7 @@ export default class {
     }
     //Auto-commit Transactions Cypher statements
     Session_commit(statement:string,parameter?:object){
+        console.log(statement)
         return new Promise((resolve, reject) => {
             if(this.debug)console.log(statement)
             this.session
@@ -94,7 +95,7 @@ export default class {
                     resolve(record);
                   },
                   onCompleted:  () =>{
-                    console.log(statement + ' completed');
+                    // console.log(statement + ' completed');
                   },
                   onError:  (error:string) =>{
                     reject(error);
@@ -103,11 +104,11 @@ export default class {
         })
     }
     commit(){
-        console.log("commit")
+        // console.log("commit")
         return new Promise((resolve, reject) => {
             this.tx.commit().subscribe({
                 onCompleted:  () =>{
-                    console.log("onCompleted")
+                    // console.log("onCompleted")
                   this.session.close();
                   resolve(true);
                 },

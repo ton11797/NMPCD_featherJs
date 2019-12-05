@@ -31,7 +31,6 @@ export class Test implements ServiceMethods<Data> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
-
     return data;
   }
 

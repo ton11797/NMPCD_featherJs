@@ -1,7 +1,10 @@
 import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/feathers';
 import { Application } from '../../../declarations';
-
-interface Data {}
+import neo4jDB from '../../../DAL/neo4j'
+interface Data {
+  schemaName:String,
+  uuid:String
+}
 
 interface ServiceOptions {}
 
@@ -18,18 +21,17 @@ export class SearchRelate implements ServiceMethods<Data> {
     return [];
   }
 
-  async get (id: Id, params?: Params): Promise<Data> {
+  async get (id: Id, params?: Params): Promise<any> {
     return {
       id, text: `A new message with ID: ${id}!`
     };
   }
 
-  async create (data: Data, params?: Params): Promise<Data> {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current, params)));
-    }
-
-    return data;
+  async create (data: Data, params?: Params): Promise<any> {
+    let {schemaName,uuid} = data
+    let neo = new neo4jDB()
+    let relation = await neo.Session_commit(`MATCH p =(n:_data:_${schemaName} {uuid:"${uuid}"})-[r]-(n2) RETURN p`,{})
+    return relation;
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
@@ -40,7 +42,7 @@ export class SearchRelate implements ServiceMethods<Data> {
     return data;
   }
 
-  async remove (id: NullableId, params?: Params): Promise<Data> {
+  async remove (id: NullableId, params?: Params): Promise<any> {
     return { id };
   }
 }

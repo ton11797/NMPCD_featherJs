@@ -27,7 +27,7 @@ export class ChangeStatus extends common implements ServiceMethods<Data> {
     let node = (await this.getNode(versionUUID)).records
     if(node.length === 0)throw new BadRequest("versionUUID not found")
     let currentStatus = node[0]._fields[0].properties.status
-    console.log(currentStatus)
+    // console.log(currentStatus)
     switch(currentStatus) {
       case "draft":
           switch(status) {

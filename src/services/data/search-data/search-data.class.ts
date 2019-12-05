@@ -45,7 +45,7 @@ export class SearchData implements ServiceMethods<Data> {
         where = `${where} AND ${conditionKey[i]} = '${condition[conditionKey[i]]}'`
       }
     }
-    console.log(`SELECT * FROM ${schemaName}_${versionUUID} WHERE ${where}`)
+    // console.log(`SELECT * FROM ${schemaName}_${versionUUID} WHERE ${where}`)
     let searchData = await client.query(`SELECT * FROM "${schemaName}_${versionUUID}" WHERE ${where}`)
     delete searchData.command
     delete searchData.oid
