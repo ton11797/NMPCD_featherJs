@@ -31,9 +31,9 @@ export class DataLink implements ServiceMethods<Data> {
     let {node1,node2,uuid1,uuid2,version} = data
     let versionSelect = version.replace(/-/g,"")
 
-    let neo = new neo4jDB()  
+    let neo = await this.app.get('neo4jDB')  
     // await neo.beginTransaction()
-    let linkedMeta:any = await neo.Session_commit(`
+    let linkedMeta:any = await neo.run(`
     MATCH (n1:_schema:_${versionSelect} {schemaName:"${node1}"})-[r]-(n2:_schema:_${versionSelect} {schemaName:"${node2}"})
     RETURN type(r)
     `,{})
@@ -44,13 +44,13 @@ export class DataLink implements ServiceMethods<Data> {
     if(linkedMeta.records.length ===0){
       throw new BadRequest("Meta link not found")
     }
-    let linked:any = await neo.Session_commit(`
+    let linked:any = await neo.run(`
     MATCH (n1:_${node1}:_data {uuid:"${uuid1}"})-[r:_${versionSelect}]-(n2:_${node2}:_data {uuid:"${uuid2}"})
     RETURN type(r)
     `,{})
     if(linked.records.length ===0){
       debug.logging(12,"data-link","no relation")
-      await neo.Session_commit(`
+      await neo.run(`
       MATCH (n1:_${node1}:_data {uuid:"${uuid1}"}),(n2:_${node2}:_data {uuid:"${uuid2}"})
       CREATE (n1)-[:_${versionSelect}]->(n2)
       RETURN n1,n2`,{})

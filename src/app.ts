@@ -30,7 +30,13 @@ console.log("\x1b[32m========= App starting =========\x1b[0m")
 app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+    'origin': ['http://127.0.0.1:8080','http://localhost:8080'],
+    'methods': 'GET,HEAD,PUT,POST,DELETE',
+    'preflightContinue': false,
+    'optionsSuccessStatus': 204,
+    credentials: true
+  }));
 app.use(compress());
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({ extended: true ,limit: '50mb'}));
@@ -40,14 +46,14 @@ app.use('/', express.static(app.get('public')));
 
 // Set up Plugins and providers
 app.configure(express.rest());
-app.configure(socketio());
+//app.configure(socketio());
 
 app.configure(sequelize);
 
 app.configure(mongodb);
 app.configure(postgres);
 app.configure(debug);
-// app.configure(neo4j);
+app.configure(neo4j);
 
 // Configure other middleware (see `middleware/index.js`)
 app.configure(middleware);
@@ -55,7 +61,7 @@ app.configure(authentication);
 // Set up our services (see `services/index.js`)
 app.configure(services);
 // Set up event channels (see channels.js)
-app.configure(channels);
+//app.configure(channels);
 
 // Configure a middleware for 404s and the error handler
 app.use(express.notFound());

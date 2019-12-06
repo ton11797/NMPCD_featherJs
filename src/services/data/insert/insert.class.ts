@@ -47,9 +47,9 @@ export class Insert implements ServiceMethods<Data> {
       await client.query('BEGIN')
       // console.log(`INSERT INTO "${schemaName}_${versionUUID}" (${insert_col},_uuid) VALUES (${insert},'${uuid}')`)
       await client.query(`INSERT INTO "${schemaName}_${versionUUID}" (${insert_col},_uuid) VALUES (${insert},'${uuid}')`,para) 
-      let neo = new neo4jDB()  
+      let neo = await this.app.get('neo4jDB')  
       let version = versionUUID.replace(/-/g,"")
-      await neo.Session_commit(`CREATE (:_data:_${schemaName}:_${version} {Param})`,{Param:{uuid}})
+      await neo.run(`CREATE (:_data:_${schemaName}:_${version} {Param})`,{Param:{uuid}})
       await client.query('COMMIT')
       
     }else{

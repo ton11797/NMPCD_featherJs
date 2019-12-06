@@ -35,9 +35,9 @@ export class NewVersion extends common implements ServiceMethods<any> {
         if(this.debug)console.log(versionName);
         if(this.debug)console.log(refVersion);
         let uuid = uuidv1();
-        let neo = new neo4jDB()
+        let neo = await this.app.get('neo4jDB')
         if((await this.getUUID(versionName)).records.length !== 0)throw new BadRequest("duplicate versionName")
-        await neo.Session_commit(`CREATE (:version {Param})`,{Param:{uuid,versionName,createDate:new Date().toLocaleString(),changeDate:new Date().toLocaleString(),status:"draft"}})
+        await neo.run(`CREATE (:version {Param})`,{Param:{uuid,versionName,createDate:new Date().toLocaleString(),changeDate:new Date().toLocaleString(),status:"draft"}})
         if(refVersion !== "" && this.notEmply(refVersion) && refVersion !== undefined){
           let result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID:refVersion})
           result.versionUUID = uuid
@@ -63,9 +63,9 @@ export class NewVersion extends common implements ServiceMethods<any> {
           // await client.query('BEGIN')
           // await client.query(`CREATE TABLE "${schemaName}_${versionUUID}" (_uuid char(36),${fieldName} ${type})`)
           await (await this.app.get('mongoClient')).collection("Schema").insertOne(result)
-          await neo.Session_commit(`MATCH (a:version {uuid:'${uuid}'}),(b:version {uuid:'${refVersion}'}) CREATE (b)-[r:new]->(a)`,{})
+          await neo.run(`MATCH (a:version {uuid:'${uuid}'}),(b:version {uuid:'${refVersion}'}) CREATE (b)-[r:new]->(a)`,{})
           // await neo.beginTransaction()
-          await neo.Session_commit(`
+          await neo.run(`
           MATCH(n:_${versionref}:_schema)
           CALL apoc.refactor.cloneNodesWithRelationships([n]) yield input, output
           SET n.versionUUID = '${uuid}'
@@ -73,7 +73,7 @@ export class NewVersion extends common implements ServiceMethods<any> {
           SET n:_${version}
           RETURN n
           `,{})
-          await neo.Session_commit(`
+          await neo.run(`
           MATCH (n:_schema:_${versionref})-[r]-(n2:_schema:_${version}) 
           delete r
           RETURN r

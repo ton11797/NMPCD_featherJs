@@ -29,8 +29,8 @@ export class SearchRelate implements ServiceMethods<Data> {
 
   async create (data: Data, params?: Params): Promise<any> {
     let {schemaName,uuid} = data
-    let neo = new neo4jDB()
-    let relation = await neo.Session_commit(`MATCH p =(n:_data:_${schemaName} {uuid:"${uuid}"})-[r]-(n2) RETURN p`,{})
+    let neo = await this.app.get('neo4jDB')
+    let relation = await neo.run(`MATCH p =(n:_data:_${schemaName} {uuid:"${uuid}"})-[r]-(n2) RETURN p`,{})
     return relation;
   }
 

@@ -33,7 +33,6 @@ export class ChangeStatus extends common implements ServiceMethods<Data> {
           switch(status) {
             case "draft":
               throw new BadRequest("same status")
-              break;
             case "final":
               // code block
               break;
@@ -51,10 +50,8 @@ export class ChangeStatus extends common implements ServiceMethods<Data> {
           switch(status) {
             case "draft":
               throw new BadRequest("can't change final top draft")
-              break;
             case "final":
               throw new BadRequest("same status")
-              break;
             case "remove":
             // code block
             break;
@@ -72,7 +69,6 @@ export class ChangeStatus extends common implements ServiceMethods<Data> {
           switch(status) {
             case "draft":
               throw new BadRequest("can't change final top draft")
-              break;
             case "final":
               // code block
               break;
@@ -81,7 +77,6 @@ export class ChangeStatus extends common implements ServiceMethods<Data> {
             break;
             case "current":
               throw new BadRequest("same status")
-              break;
             default:
               throw new BadRequest("unknow status")
           }
@@ -89,8 +84,8 @@ export class ChangeStatus extends common implements ServiceMethods<Data> {
       default:
         throw new Conflict("neo4j status incorrent")
     }
-    let neo = new neo4jDB()
-    await neo.Session_commit(`
+    let neo = await this.app.get('neo4jDB')
+    await neo.run(`
     MATCH (n:version { uuid: '${versionUUID}' })
     SET n.status = '${status}'`,{})
     return node;

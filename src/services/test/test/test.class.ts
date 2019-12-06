@@ -15,7 +15,22 @@ export class Test implements ServiceMethods<Data> {
   }
 
   async find (params?: Params): Promise<Data[] | any> {
-    console.log(this.app.get('mongoClient'))
+    let neo = await this.app.get('neo4jDB')
+    // console.log(this.app.get('neo4jDB'))
+    let st =`MATCH (n) RETURN n`
+    let test = await neo.run(st,{})
+    console.log(test)
+    // try {
+    //   neo.run(st,{})
+    //   .then( (result:object) =>{
+    //     console.log(result)
+    // })
+    // .catch( (error:string) =>{
+    //     console.log(error);
+    // });
+    // } catch (error) {
+    //   console.log(error)
+    // }
     let ans =  await (await this.app.get('mongoClient')).collection("Schema").find({}).toArray()
     return ans;
   }

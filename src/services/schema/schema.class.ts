@@ -49,9 +49,9 @@ export class Schema implements ServiceMethods<Data> {
         await client.query('BEGIN')
         await client.query(`CREATE TABLE "${schemaName}_${versionUUID}" (_uuid char(36),${fieldName} ${type})`)
         await client.query(`CREATE TABLE "${schemaName}_${versionUUID}_c" (_id integer NOT NULL DEFAULT nextval('uuid_c_d_id_seq'::regclass),_uuid char(36),_count integer,_approved integer,_user json,_status integer,_action integer,${fieldName} ${type})`)
-        let neo = new neo4jDB()
+        let neo = await this.app.get('neo4jDB')
         let version = versionUUID.replace(/-/g,"")
-        await neo.Session_commit(`CREATE (:_schema:_${version} {Param})`,{Param:{versionUUID,schemaName}})
+        await neo.run(`CREATE (:_schema:_${version} {Param})`,{Param:{versionUUID,schemaName}})
         //create table
         result.schema[schemaName] = [fieldDetail]
       }else{
@@ -112,9 +112,9 @@ export class Schema implements ServiceMethods<Data> {
       DROP TABLE  "${schemaName}_${versionUUID}";`)
       delete  result.schema[schemaName]
       let newSchema = {$set:{schema:result.schema}}
-      let neo = new neo4jDB()
+      let neo = await this.app.get('neo4jDB')
       let version = versionUUID.replace(/-/g,"")
-      await neo.Session_commit(`MATCH (n:_${version}:_schema{schemaName:"${schemaName}"}) delete n`,{})
+      await neo.run(`MATCH (n:_${version}:_schema{schemaName:"${schemaName}"}) delete n`,{})
       await (await this.app.get('mongoClient')).collection("Schema").updateOne({versionUUID},newSchema)
     }else{
       throw new BadRequest("action not found")

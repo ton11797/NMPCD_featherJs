@@ -87,8 +87,8 @@ export class Reset implements ServiceMethods<Data> {
     
     );`)
     await client.query('COMMIT')
-    let neo = new neo4jDB()
-    await neo.Session_commit(`MATCH (n) DETACH DELETE n`,{})
+    let neo = await this.app.get('neo4jDB')
+    await neo.run(`MATCH (n) DETACH DELETE n`,{})
     return data;
   }
 

@@ -15,9 +15,9 @@ export class GetVersion {
   }
 
   async find (params?: Params): Promise<any> {
-    let neo = new neo4jDB()
-    let data:any = await neo.Session_commit(`MATCH (n:version) RETURN n`,{})
-    let relation:any = await neo.Session_commit(`MATCH p=()-[r:new]->() RETURN p`,{})
+    let neo = await this.app.get('neo4jDB')
+    let data:any = await neo.run(`MATCH (n:version) RETURN n`,{})
+    let relation:any = await neo.run(`MATCH p=()-[r:new]->() RETURN p`,{})
     let result = {
       result:{
         version:data.records.map((el: { _fields: any; })=>{

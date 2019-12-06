@@ -29,14 +29,14 @@ export class MetaLink implements ServiceMethods<Data> {
     let {node1,node2,version} = data
     let versionSelect = version.replace(/-/g,"")
 
-    let neo = new neo4jDB()  
+    let neo = await this.app.get('neo4jDB')  
     // await neo.beginTransaction()
-    let linked:any = await neo.Session_commit(`
+    let linked:any = await neo.run(`
     MATCH (n1:_${versionSelect}:_schema {schemaName:"${node1}"})-[r]-(n2:_${versionSelect}:_schema {schemaName:"${node2}"})
     RETURN type(r)
     `,{})
     if(linked.records.length !==0)throw new BadRequest("already linked")
-    await neo.Session_commit(`
+    await neo.run(`
     MATCH (n1:_${versionSelect}:_schema {schemaName:"${node1}"}),(n2:_${versionSelect}:_schema {schemaName:"${node2}"})
     CREATE (n1)-[r:RELTYPE]->(n2)
     RETURN n1,n2`,{})

@@ -5,11 +5,11 @@ export default class{
         return true
     }
     async getUUID(versionName){
-        let neo = new neo4jDB()
-        return await neo.Session_commit(`MATCH (n:version {versionName:'${versionName}'}) RETURN n`)
+        let neo = await this.app.get('neo4jDB')
+        return await neo.run(`MATCH (n:version {versionName:'${versionName}'}) RETURN n`)
     }
     async getNode(uuid){
-        let neo = new neo4jDB()
-        return await neo.Session_commit(`MATCH (n:version {uuid:'${uuid}'}) RETURN n`)
+        let neo = await this.app.get('neo4jDB')
+        return await neo.run(`MATCH (n:version {uuid:'${uuid}'}) RETURN n`)
     }
 }
