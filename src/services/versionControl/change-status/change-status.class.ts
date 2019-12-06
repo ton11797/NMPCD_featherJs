@@ -85,9 +85,15 @@ export class ChangeStatus extends common implements ServiceMethods<Data> {
         throw new Conflict("neo4j status incorrent")
     }
     let neo = await this.app.get('neo4jDB')
-    await neo.run(`
-    MATCH (n:version { uuid: '${versionUUID}' })
-    SET n.status = '${status}'`,{})
+    if(status ==='current'){
+      await neo.run(`
+      MATCH (n:version { status: 'current' })
+      SET n.status = 'final'`,{})
+    }
+      await neo.run(`
+      MATCH (n:version { uuid: '${versionUUID}' })
+      SET n.status = '${status}'`,{})
+    
     return node;
   }
 
