@@ -1,4 +1,4 @@
-// Initializes the `systemMange/reset` service on path `/systemMange/reset`
+// Initializes the `systemManage/reset` service on path `/systemManage/reset`
 import { ServiceAddons } from '@feathersjs/feathers';
 import { Application } from '../../../declarations';
 import { Reset } from './reset.class';
@@ -7,23 +7,20 @@ import hooks from './reset.hooks';
 // Add this service to the service type index
 declare module '../../../declarations' {
   interface ServiceTypes {
-    'systemMange/reset': Reset & ServiceAddons<any>;
+    'systemManage/reset': Reset & ServiceAddons<any>;
   }
 }
 
 export default function (app: Application) {
-  
-  const paginate = app.get('paginate');
-
   const options = {
-    paginate
+    paginate: app.get('paginate')
   };
 
   // Initialize our service with any options it requires
-  app.use('/systemMange/reset', new Reset(options, app));
+  app.use('/systemManage/reset', new Reset(options, app));
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('systemMange/reset');
+  const service = app.service('systemManage/reset');
 
   service.hooks(hooks);
 }

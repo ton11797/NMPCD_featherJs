@@ -5,7 +5,6 @@ import testMongo from './test/mongo/mongo.service';
 import schema from './schema/schema.service';
 import testSequelize from './test/sequelize/sequelize.service';
 import dataInsert from './data/insert/insert.service';
-import systemMangeReset from './systemMange/reset/reset.service';
 import versionControlChangeStatus from './versionControl/change-status/change-status.service';
 import versionControlGetVersion from './versionControl/get-version/get-version.service';
 import testTest from './test/test/test.service';
@@ -21,6 +20,8 @@ import dataEditData from './data/edit-data/edit-data.service';
 import dataEditConfirm from './data/edit-confirm/edit-confirm.service';
 import dataDeleteConfirm from './data/delete-confirm/delete-confirm.service';
 import dataSearchRelate from './data/search-relate/search-relate.service';
+import systemManageConfig from './systemManage/config/config.service';
+import systemManageReset from './systemManage/reset/reset.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -30,7 +31,6 @@ export default function (app: Application) {
   app.configure(schema);
   app.configure(testSequelize);
   app.configure(dataInsert);
-  app.configure(systemMangeReset);
   app.configure(versionControlChangeStatus);
   app.configure(versionControlGetVersion);
   app.configure(testTest);
@@ -46,4 +46,6 @@ export default function (app: Application) {
   app.configure(dataEditConfirm);
   app.configure(dataDeleteConfirm);
   app.configure(dataSearchRelate);
+  app.configure(systemManageConfig);
+  app.configure(systemManageReset);
 }

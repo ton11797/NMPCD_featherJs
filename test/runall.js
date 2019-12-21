@@ -381,7 +381,7 @@ async function Run_linkData3(){
 
 }
 async function Run_reset(){
-    await axios.post('/systemMange/reset',{}).then((data)=>{
+    await axios.post('/systemManage/reset',{}).then((data)=>{
         console.log(`>>>>reset Pass`)
     }).catch((data)=>{
         console.log("\x1b[31mXXXXXreset Fail")

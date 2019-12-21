@@ -31,7 +31,7 @@ app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
 app.use(helmet());
 app.use(cors({
-    'origin': ['http://127.0.0.1:8080','http://localhost:8080'],
+    'origin': ['http://127.0.0.1:8080','http://127.0.0.1:8081','http://localhost:8080','http://localhost:8081'],
     'methods': 'GET,HEAD,PUT,POST,DELETE',
     'preflightContinue': false,
     'optionsSuccessStatus': 204,

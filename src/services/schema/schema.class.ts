@@ -36,6 +36,8 @@ export class Schema implements ServiceMethods<Data> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","schema") 
     let {versionUUID,schemaName,action,fieldName,type} = data
     
     let result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID})
@@ -46,7 +48,7 @@ export class Schema implements ServiceMethods<Data> {
       let fieldDetail = {fieldName,type}
       
       if(result.schema[schemaName] === undefined){
-        await client.query('BEGIN')
+        // await client.query('BEGIN')
         await client.query(`CREATE TABLE "${schemaName}_${versionUUID}" (_uuid char(36),${fieldName} ${type})`)
         await client.query(`CREATE TABLE "${schemaName}_${versionUUID}_c" (_id integer NOT NULL DEFAULT nextval('uuid_c_d_id_seq'::regclass),_uuid char(36),_count integer,_approved integer,_user json,_status integer,_action integer,${fieldName} ${type})`)
         let neo = await this.app.get('neo4jDB')
@@ -66,7 +68,7 @@ export class Schema implements ServiceMethods<Data> {
           throw new BadRequest("duplicate fieldName")
         }else{
           //alter table
-          await client.query('BEGIN')
+          // await client.query('BEGIN')
           await client.query(`
           ALTER TABLE "${schemaName}_${versionUUID}"
           ADD COLUMN ${fieldName} ${type}`)
@@ -93,7 +95,7 @@ export class Schema implements ServiceMethods<Data> {
         throw new BadRequest("fieldName not found")
       }else{
         //drop COLUMN
-        await client.query('BEGIN')
+        // await client.query('BEGIN')
         await client.query(`
         ALTER TABLE "${schemaName}_${versionUUID}"
         DROP COLUMN ${fieldName}`)
@@ -105,7 +107,7 @@ export class Schema implements ServiceMethods<Data> {
         await (await this.app.get('mongoClient')).collection("Schema").updateOne({versionUUID},newSchema)
       }
     }else if(action === "drop"){
-      await client.query('BEGIN')
+      // await client.query('BEGIN')
       await client.query(`
       DROP TABLE  "${schemaName}_${versionUUID}_c";`)
       await client.query(`
