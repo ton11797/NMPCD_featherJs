@@ -29,6 +29,7 @@ export class SearchData implements ServiceMethods<Data> {
       return Promise.all(data.map(current => this.create(current, params)));
     }
     let debug = this.app.get('debug')
+    debug.logging(1,"API_call","search-data")
     // debug.logging(1,"test","test")
     // debug.logging(7,"test","test")
     // debug.logging(12,"test","test")

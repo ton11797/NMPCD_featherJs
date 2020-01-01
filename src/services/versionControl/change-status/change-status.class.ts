@@ -23,6 +23,8 @@ export class ChangeStatus extends common implements ServiceMethods<Data> {
 
 
   async create (data: any, params?: Params): Promise<any> {
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","change-status")
     let {versionUUID,status}= data
     let node = (await this.getNode(versionUUID)).records
     if(node.length === 0)throw new BadRequest("versionUUID not found")

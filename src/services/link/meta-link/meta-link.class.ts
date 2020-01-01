@@ -28,7 +28,8 @@ export class MetaLink implements ServiceMethods<Data> {
   async create (data: any, params?: Params): Promise<any> {
     let {node1,node2,version} = data
     let versionSelect = version.replace(/-/g,"")
-
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","meta-link")
     let neo = await this.app.get('neo4jDB')  
     // await neo.beginTransaction()
     let linked:any = await neo.run(`

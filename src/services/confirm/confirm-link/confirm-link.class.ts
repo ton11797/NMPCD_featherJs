@@ -28,7 +28,8 @@ export class ConfirmLink implements ServiceMethods<Data> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
-
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","confirm-link")
     return data;
   }
 

@@ -35,6 +35,8 @@ export class ConfirmGet implements ServiceMethods<Data> {
   }
 
   async create (data: Data, params?: Params): Promise<any> {
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","confirm-get")
     let {versionUUID,type,filter} = data
     let schemaList:string[] = []
     let limit:string|number = "ALL"

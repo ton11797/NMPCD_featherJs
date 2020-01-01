@@ -22,6 +22,8 @@ export class Insert implements ServiceMethods<Data> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","insert")
     let {versionUUID,schemaName,value} = data
     let result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID})
     if(result === null)throw new BadRequest("versionUUID not found")

@@ -32,6 +32,8 @@ export class DeleteData implements ServiceMethods<Data> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","delete-data")
     let {versionUUID,schemaName,uuid} = data
     let client:any = await this.app.get('postgresClient')
     let result = await client.query(`DELETE FROM "${schemaName}_${versionUUID}" WHERE _uuid = '${uuid}'`) 
