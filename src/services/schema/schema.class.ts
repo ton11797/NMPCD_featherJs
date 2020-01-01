@@ -20,8 +20,15 @@ export class Schema implements ServiceMethods<Data> {
   }
 
   async get (id: Id, params?: Params): Promise<Data> {
-    
+    let neo = await this.app.get('neo4jDB')
+    let relation:any = await neo.run(`MATCH p=({versionUUID:"${id}"})-[r:RELTYPE]->({versionUUID:"${id}"}) RETURN p`,{})
     let result = null
+    relation = relation.records.map((el: { _fields: any; })=>{
+      let ell = {start:"",end:""}
+      ell.start =el._fields[0].start.properties.schemaName
+      ell.end =el._fields[0].end.properties.schemaName
+      return ell
+    })
     if(params === {} || params === undefined){
       result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID:id})
     }else{
@@ -29,7 +36,7 @@ export class Schema implements ServiceMethods<Data> {
       result = await (await this.app.get('mongoClient')).collection("Schema").findOne({versionUUID:id,...query})
     }
     
-    return {result};
+    return {result,relation};
   }
 
   async create (data: any, params?: Params): Promise<any> {
