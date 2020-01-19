@@ -30,24 +30,35 @@ export class SearchData implements ServiceMethods<Data> {
     }
     let debug = this.app.get('debug')
     debug.logging(1,"API_call","search-data")
-    // debug.logging(1,"test","test")
-    // debug.logging(7,"test","test")
-    // debug.logging(12,"test","test")
-    // debug.logging(99,"test","test")
-    let {schemaName,versionUUID,condition} = data
+    let limit:string|number = "ALL"
+    let offset:number = 0
+    let {schemaName,versionUUID,condition,filter} = data
+    if(filter !== undefined){
+      if(filter.limit !== undefined){
+        limit = filter.limit
+      }
+      if(filter.offset !== undefined){
+        offset = filter.offset
+      }
+    }
     let client:any =  await this.app.get('postgresClient')
     // await client.query('BEGIN')
     let where = ''
-    let conditionKey = Object.keys(condition)
-    for(let i=0;i<conditionKey.length;i++){
-      if(where === ''){
-        where = `${where} ${conditionKey[i]} = '${condition[conditionKey[i]]}'`
-      }else{
-        where = `${where} AND ${conditionKey[i]} = '${condition[conditionKey[i]]}'`
+    if(condition !== undefined){
+      let conditionKey = Object.keys(condition)
+      for(let i=0;i<conditionKey.length;i++){
+        if(where === ''){
+          where = `${where} ${conditionKey[i]} = '${condition[conditionKey[i]]}'`
+        }else{
+          where = `${where} AND ${conditionKey[i]} = '${condition[conditionKey[i]]}'`
+        }
       }
+      where = 'WHERE ' +where
     }
+    const sql = `SELECT * FROM "${schemaName}_${versionUUID}" ${where} limit ${limit} OFFSET ${offset}`
+    debug.logging(99,"data-link","postgres "+sql)
     // console.log(`SELECT * FROM ${schemaName}_${versionUUID} WHERE ${where}`)
-    let searchData = await client.query(`SELECT * FROM "${schemaName}_${versionUUID}" WHERE ${where}`)
+    let searchData = await client.query(sql)
     delete searchData.command
     delete searchData.oid
     delete searchData._parsers
