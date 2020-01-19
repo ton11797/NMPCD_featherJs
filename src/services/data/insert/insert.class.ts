@@ -29,7 +29,7 @@ export class Insert implements ServiceMethods<Data> {
     if(result === null)throw new BadRequest("versionUUID not found")
     if(result.schema[schemaName] === undefined)throw new BadRequest("schemaName not found")
     for(let i=0;i<result.schema[schemaName].length;i++){
-      if(value[result.schema[schemaName][i].fieldName] === undefined)throw new BadRequest(`field value ${result.schema[schemaName][i].fieldName} not found`)
+      if(value[result.schema[schemaName][i].fieldName.toLowerCase()] === undefined)throw new BadRequest(`field value ${result.schema[schemaName][i].fieldName.toLowerCase()} not found`)
     }
     let insert =""
     let insert_col =""
@@ -37,10 +37,10 @@ export class Insert implements ServiceMethods<Data> {
     data.uuid =uuid 
     let para =[]
     for(let i=0;i<result.schema[schemaName].length;i++){
-      insert_col = `${insert_col} ,${result.schema[schemaName][i].fieldName}`
-      // insert = `${insert} ,'${value[result.schema[schemaName][i].fieldName]}'`
+      insert_col = `${insert_col} ,${result.schema[schemaName][i].fieldName.toLowerCase()}`
+      // insert = `${insert} ,'${value[result.schema[schemaName][i].fieldName.toLowerCase()]}'`
       insert = `${insert} , $${(i+1)}`
-      para.push(value[result.schema[schemaName][i].fieldName])
+      para.push(value[result.schema[schemaName][i].fieldName.toLowerCase()])
     }
     if(insert !== ""){
       insert = insert.substr(2)
