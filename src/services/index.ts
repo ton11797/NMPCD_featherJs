@@ -22,6 +22,7 @@ import dataDeleteConfirm from './data/delete-confirm/delete-confirm.service';
 import dataSearchRelate from './data/search-relate/search-relate.service';
 import systemManageConfig from './systemManage/config/config.service';
 import systemManageReset from './systemManage/reset/reset.service';
+import dataUpload from './data/upload/upload.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -48,4 +49,5 @@ export default function (app: Application) {
   app.configure(dataSearchRelate);
   app.configure(systemManageConfig);
   app.configure(systemManageReset);
+  app.configure(dataUpload);
 }
