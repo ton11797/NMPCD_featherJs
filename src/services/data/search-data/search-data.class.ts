@@ -32,7 +32,7 @@ export class SearchData implements ServiceMethods<Data> {
     debug.logging(1,"API_call","search-data")
     let limit:string|number = "ALL"
     let offset:number = 0
-    let {schemaName,versionUUID,condition,filter} = data
+    let {schemaName,versionUUID,condition,like,filter,count} = data
     if(filter !== undefined){
       if(filter.limit !== undefined){
         limit = filter.limit
@@ -53,12 +53,26 @@ export class SearchData implements ServiceMethods<Data> {
           where = `${where} AND ${conditionKey[i]} = '${condition[conditionKey[i]]}'`
         }
       }
-      where = 'WHERE ' +where
     }
-    const sql = `SELECT * FROM "${schemaName}_${versionUUID}" ${where} limit ${limit} OFFSET ${offset}`
+    if(like !== undefined){
+      let likeKey = Object.keys(like)
+      for(let i=0;i<likeKey.length;i++){
+        if(where === ''){
+          where = `${where} ${likeKey[i]} LIKE '${like[likeKey[i]]}%'`
+        }else{
+          where = `${where} AND ${likeKey[i]} LIKE '${like[likeKey[i]]}%'`
+        }
+      }
+    }
+    if(where !== '')where = 'WHERE ' +where
+    let sql = `SELECT * FROM "${schemaName}_${versionUUID}" ${where} limit ${limit} OFFSET ${offset}`
     debug.logging(99,"data-link","postgres "+sql)
     // console.log(`SELECT * FROM ${schemaName}_${versionUUID} WHERE ${where}`)
     let searchData = await client.query(sql)
+    sql = `SELECT COUNT(*) FROM "${schemaName}_${versionUUID}";`
+    debug.logging(99,"data-link","postgres "+sql)
+    const countRow = await client.query(sql)
+    searchData.countRow = countRow.rows[0]
     delete searchData.command
     delete searchData.oid
     delete searchData._parsers
