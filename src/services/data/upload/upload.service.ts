@@ -55,6 +55,7 @@ export default function (app: Application) {
           body.push({
             description: req.body.description,
             orignalName: file.originalname,
+            fileName:file.filename,
             newNameWithPath: file.path,
             userId: req.user.id
           });
