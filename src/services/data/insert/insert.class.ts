@@ -57,6 +57,7 @@ export class Insert implements ServiceMethods<Data> {
     }else{
 
     }
+    delete data.value
     return data;
   }
 
