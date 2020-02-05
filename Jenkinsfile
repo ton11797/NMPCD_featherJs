@@ -4,11 +4,16 @@ pipeline {
     }
     agent any 
     stages {
-        stage('Building image') {
+        stage('Building js') {
             steps{
-                script {
-                    docker.build registry + ":$BUILD_NUMBER"
-                }
+                sh 'echo "Building js"'
+                sh 'npm install'
+                sh 'npm run compile'
+            }
+        }
+        stage('start pm2') {
+            steps{
+                sh 'pm2 start pm2run.yaml'
             }
         }
     }
