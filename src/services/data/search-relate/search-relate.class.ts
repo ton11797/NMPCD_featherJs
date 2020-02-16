@@ -28,12 +28,21 @@ export class SearchRelate implements ServiceMethods<Data> {
   }
 
   async create (data: Data, params?: Params): Promise<any> {
-    let debug = this.app.get('debug')
+    const debug = this.app.get('debug')
     debug.logging(1,"API_call","search-relate")
-    let {schemaName,uuid} = data
-    let neo = await this.app.get('neo4jDB')
-    let relation = await neo.run(`MATCH p =(n:_data:_${schemaName} {uuid:"${uuid}"})-[r]-(n2) RETURN p`,{})
-    return relation;
+    const {schemaName,uuid} = data
+    const neo = await this.app.get('neo4jDB')
+    const relation = await neo.run(`MATCH p =(n:_data:_${schemaName} {uuid:"${uuid}"})-[r]-(n2) RETURN p`,{})
+    let respond = []
+    for(let i=0;i<relation.records.length;i++){
+      respond.push({
+        start:relation.records[i]._fields[0].start.properties,
+        end:relation.records[i]._fields[0].end.properties,
+        startLable:relation.records[i]._fields[0].start.labels,
+        endLable:relation.records[i]._fields[0].end.labels
+      })
+    }
+    return respond;
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
