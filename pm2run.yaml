@@ -1,0 +1,6 @@
+apps:
+  - script   : ./lib/index.js
+    name     : 'nmpcd-api'
+    instances: 10
+    exec_mode: cluster
+    max_memory_restart: '400M'
