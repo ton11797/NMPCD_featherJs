@@ -42,8 +42,8 @@ export class EditData implements ServiceMethods<Data> {
     if(result.schema[schemaName] === undefined)throw new BadRequest("schemaName not found")
     let update =""
     for(let i=0;i<result.schema[schemaName].length;i++){
-      if(updateData[result.schema[schemaName][i].fieldName] !== undefined){
-        update = `${update} ,${result.schema[schemaName][i].fieldName} = '${updateData[result.schema[schemaName][i].fieldName]}'`
+      if(updateData[result.schema[schemaName][i].fieldName.toLowerCase()] !== undefined){
+        update = `${update} ,${result.schema[schemaName][i].fieldName.toLowerCase()} = '${updateData[result.schema[schemaName][i].fieldName.toLowerCase()]}'`
       }
     }
     update = update.substr(2)

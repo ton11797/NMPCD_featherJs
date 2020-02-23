@@ -50,20 +50,20 @@ const createSchema = [
 ]
 
 let importTest = [
-    {"schemaName":"GP","value":{"FSN":"GP1","GPID":"1"}},
-    {"schemaName":"GP","value":{"FSN":"GP2","GPID":"2"}},
-    {"schemaName":"GPU","value":{"FSN":"GPU1","GPUID":"1"}},
-    {"schemaName":"GPU","value":{"FSN":"GPU2","GPUID":"2"}},
-    {"schemaName":"TP","value":{"FSN":"TP1","TPID":"1","MANUFACTURER":"1"}},
-    {"schemaName":"TP","value":{"FSN":"TP2","TPID":"2","MANUFACTURER":"2"}},
-    {"schemaName":"TPU","value":{"FSN":"TPU1","TPUID":"1","MANUFACTURER":"1"}},
-    {"schemaName":"TPU","value":{"FSN":"TPU2","TPUID":"2","MANUFACTURER":"2"}},
-    {"schemaName":"SUB","value":{"FSN":"SUB1","SUBID":"1"}},
-    {"schemaName":"SUB","value":{"FSN":"SUB2","SUBID":"2"}},
-    {"schemaName":"VTM","value":{"FSN":"VTM1","VTMID":"1"}},
-    {"schemaName":"VTM","value":{"FSN":"VTM2","VTMID":"2"}},
-    {"schemaName":"STD24","value":{"STD_CODE":"1", "Version":"1", "RegNo":"1", "T_Code":"1", "TradeName":"1", "Item":"1", "Company":"1"}},
-    {"schemaName":"STD24","value":{"STD_CODE":"2", "Version":"2", "RegNo":"2", "T_Code":"2", "TradeName":"2", "Item":"2", "Company":"2"}},
+    {"schemaName":"GP","value":{"fsn":"gp1","gpid":"1"}},
+    {"schemaName":"GP","value":{"fsn":"gp2","gpid":"2"}},
+    {"schemaName":"GPU","value":{"fsn":"gpu1","gpuid":"1"}},
+    {"schemaName":"GPU","value":{"fsn":"gpu2","gpuid":"2"}},
+    {"schemaName":"TP","value":{"fsn":"tp1","tpid":"1","manufacturer":"1"}},
+    {"schemaName":"TP","value":{"fsn":"tp2","tpid":"2","manufacturer":"2"}},
+    {"schemaName":"TPU","value":{"fsn":"tpu1","tpuid":"1","manufacturer":"1"}},
+    {"schemaName":"TPU","value":{"fsn":"tpu2","tpuid":"2","manufacturer":"2"}},
+    {"schemaName":"SUB","value":{"fsn":"sub1","subid":"1"}},
+    {"schemaName":"SUB","value":{"fsn":"sub2","subid":"2"}},
+    {"schemaName":"VTM","value":{"fsn":"vtm1","vtmid":"1"}},
+    {"schemaName":"VTM","value":{"fsn":"vtm2","vtmid":"2"}},
+    {"schemaName":"STD24","value":{"std_code":"1", "version":"1", "regno":"1", "t_code":"1", "tradename":"1", "item":"1", "company":"1"}},
+    {"schemaName":"STD24","value":{"std_code":"2", "version":"2", "regno":"2", "t_code":"2", "tradename":"2", "item":"2", "company":"2"}},
 ]
 
 let creatMetaLink = [
@@ -90,29 +90,29 @@ let createDataLink =[
     [11,1]
 ]
 let importTest3 = [
-    {"schemaName":"SUB","value":{"FSN":"SUB0","SUBID":"1_test1"}},
-    {"schemaName":"SUB","value":{"FSN":"SUB1","SUBID":"1_test2"}},
-    {"schemaName":"SUB","value":{"FSN":"SUB2","SUBID":"1_test3"}},
-    {"schemaName":"SUB","value":{"FSN":"SUB3","SUBID":"1_test4"}},
-    {"schemaName":"SUB","value":{"FSN":"SUB4","SUBID":"1_test5"}},
-    {"schemaName":"VTM","value":{"FSN":"VTM1","VTMID":"1_test6"}},
-    {"schemaName":"VTM","value":{"FSN":"VTM2","VTMID":"2_test7"}},
-    {"schemaName":"GP","value":{"FSN":"GP1","GPID":"1_test8"}},
-    {"schemaName":"GPU","value":{"FSN":"GPU1","GPUID":"1_test9"}},
-    {"schemaName":"GPU","value":{"FSN":"GPU2","GPUID":"2_test10"}},
-    {"schemaName":"GP","value":{"FSN":"GP2","GPID":"2_test11"}},
-    {"schemaName":"GPU","value":{"FSN":"GPU1","GPUID":"1_test12"}},
-    {"schemaName":"GPU","value":{"FSN":"GPU2","GPUID":"2_test13"}},
-    {"schemaName":"TP","value":{"FSN":"TP1","TPID":"1","MANUFACTURER":"1_test14"}},
-    {"schemaName":"TPU","value":{"FSN":"TPU1","TPUID":"1","MANUFACTURER":"1_test15"}},
-    {"schemaName":"TPU","value":{"FSN":"TPU2","TPUID":"2","MANUFACTURER":"2_test16"}},
-    {"schemaName":"TP","value":{"FSN":"TP2","TPID":"2","MANUFACTURER":"2_test17"}},
-    {"schemaName":"TPU","value":{"FSN":"TPU1","TPUID":"1","MANUFACTURER":"1_test18"}},
-    {"schemaName":"TPU","value":{"FSN":"TPU2","TPUID":"2","MANUFACTURER":"2_test19"}},
-    {"schemaName":"STD24","value":{"STD_CODE":"1", "Version":"1", "RegNo":"1", "T_Code":"1", "TradeName":"1", "Item":"1", "Company":"1_test20"}},
-    {"schemaName":"STD24","value":{"STD_CODE":"2", "Version":"2", "RegNo":"2", "T_Code":"2", "TradeName":"2", "Item":"2", "Company":"2_test21"}},
-    {"schemaName":"STD24","value":{"STD_CODE":"1", "Version":"1", "RegNo":"1", "T_Code":"1", "TradeName":"1", "Item":"1", "Company":"1_test22"}},
-    {"schemaName":"STD24","value":{"STD_CODE":"2", "Version":"2", "RegNo":"2", "T_Code":"2", "TradeName":"2", "Item":"2", "Company":"2_test23"}},
+    {"schemaName":"SUB","value":{"fsn":"sub0","subid":"1_test1"}},
+    {"schemaName":"SUB","value":{"fsn":"sub1","subid":"1_test2"}},
+    {"schemaName":"SUB","value":{"fsn":"sub2","subid":"1_test3"}},
+    {"schemaName":"SUB","value":{"fsn":"sub3","subid":"1_test4"}},
+    {"schemaName":"SUB","value":{"fsn":"sub4","subid":"1_test5"}},
+    {"schemaName":"VTM","value":{"fsn":"vtm1","vtmid":"1_test6"}},
+    {"schemaName":"VTM","value":{"fsn":"vtm2","vtmid":"2_test7"}},
+    {"schemaName":"GP","value":{"fsn":"gp1","gpid":"1_test8"}},
+    {"schemaName":"GPU","value":{"fsn":"gpu1","gpuid":"1_test9"}},
+    {"schemaName":"GPU","value":{"fsn":"gpu2","gpuid":"2_test10"}},
+    {"schemaName":"GP","value":{"fsn":"gp2","gpid":"2_test11"}},
+    {"schemaName":"GPU","value":{"fsn":"gpu1","gpuid":"1_test12"}},
+    {"schemaName":"GPU","value":{"fsn":"gpu2","gpuid":"2_test13"}},
+    {"schemaName":"TP","value":{"fsn":"tp1","tpid":"1","manufacturer":"1_test14"}},
+    {"schemaName":"TPU","value":{"fsn":"tpu1","tpuid":"1","manufacturer":"1_test15"}},
+    {"schemaName":"TPU","value":{"fsn":"tpu2","tpuid":"2","manufacturer":"2_test16"}},
+    {"schemaName":"TP","value":{"fsn":"tp2","tpid":"2","manufacturer":"2_test17"}},
+    {"schemaName":"TPU","value":{"fsn":"tpu1","tpuid":"1","manufacturer":"1_test18"}},
+    {"schemaName":"TPU","value":{"fsn":"tpu2","tpuid":"2","manufacturer":"2_test19"}},
+    {"schemaName":"STD24","value":{"std_code":"1", "version":"1", "regno":"1", "t_code":"1", "tradename":"1", "item":"1", "company":"1_test20"}},
+    {"schemaName":"STD24","value":{"std_code":"2", "version":"2", "regno":"2", "t_code":"2", "tradename":"2", "item":"2", "company":"2_test21"}},
+    {"schemaName":"STD24","value":{"std_code":"1", "version":"1", "regno":"1", "t_code":"1", "tradename":"1", "item":"1", "company":"1_test22"}},
+    {"schemaName":"STD24","value":{"std_code":"2", "version":"2", "regno":"2", "t_code":"2", "tradename":"2", "item":"2", "company":"2_test23"}},
 ]
 let createDataLink3 =[
     [1,5],
@@ -432,8 +432,8 @@ async function Run_editData(){
         "schemaName":"GP",
         "uuid":importTest[0].uuid,
         "data":{
-            "FSN":"testEdit",
-            "GPID":"testEdit"
+            "fsn":"testEdit",
+            "gpid":"testEdit"
         }
     }
     await axios.post('/data/edit-data',request).then((data)=>{
