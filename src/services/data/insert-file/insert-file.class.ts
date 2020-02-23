@@ -28,6 +28,8 @@ export class InsertFile implements ServiceMethods<Data> {
   }
 
   async create (data: Data, params?: Params): Promise<any> {
+    let debug = this.app.get('debug')
+    debug.logging(1,"API_call","insert-file")
     const {fileName,importTo,versionUUID}=data
     const path = `./${this.app.get('fileUploadPath')}/${fileName}`
     const buf = fs.readFileSync(path);
@@ -40,8 +42,13 @@ export class InsertFile implements ServiceMethods<Data> {
       }
     })
     const Insert_service = this.app.service('data/insert');
-    const respond = Insert_service.create(Insert_data)
-    return respond;
+    try {
+      await Insert_service.create(Insert_data)
+    } catch (error) {
+      return error;
+    }
+    debug.logging(1,"API_call","insert-file done")
+    return 'ok';
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
