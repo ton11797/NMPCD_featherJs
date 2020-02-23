@@ -48,12 +48,20 @@ export class DataLink implements ServiceMethods<Data> {
     MATCH (n1:_${node1}:_data {uuid:"${uuid1}"})-[r:_${versionSelect}]-(n2:_${node2}:_data {uuid:"${uuid2}"})
     RETURN type(r)
     `,{})
+    debug.logging(99,"data-link","neo "+`
+    MATCH (n1:_${node1}:_data {uuid:"${uuid1}"})-[r:_${versionSelect}]-(n2:_${node2}:_data {uuid:"${uuid2}"})
+    RETURN type(r)
+    `)
     if(linked.records.length ===0){
       debug.logging(12,"data-link","no relation")
       await neo.run(`
       MATCH (n1:_${node1}:_data {uuid:"${uuid1}"}),(n2:_${node2}:_data {uuid:"${uuid2}"})
       CREATE (n1)-[:_${versionSelect}]->(n2)
       RETURN n1,n2`,{})
+      debug.logging(99,"data-link","neo "+`
+      MATCH (n1:_${node1}:_data {uuid:"${uuid1}"}),(n2:_${node2}:_data {uuid:"${uuid2}"})
+      CREATE (n1)-[:_${versionSelect}]->(n2)
+      RETURN n1,n2`)
     }else{
       return data
     }
