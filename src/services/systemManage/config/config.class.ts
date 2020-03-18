@@ -15,7 +15,7 @@ export class Config implements ServiceMethods<Data> {
   }
 
   async find (params?: Params): Promise<Data[] | Paginated<Data>> {
-    let result = await (await this.app.get('mongoClient')).collection("system").findOne({})
+    const result = await (await this.app.get('mongoClient')).collection("system").findOne({})
     return result
   }
   
@@ -23,12 +23,11 @@ export class Config implements ServiceMethods<Data> {
     return []
   }
 
-  async create (data: Data, params?: Params): Promise<Data> {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current, params)));
-    }
-
-    return data;
+  async create (data: any, params?: Params): Promise<Data> {
+    delete data._id
+    const newconfig = {$set:data}
+    const result = await (await this.app.get('mongoClient')).collection("system").updateOne({},newconfig)
+    return result
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
