@@ -18,7 +18,17 @@ export class Insert implements ServiceMethods<Data> {
     this.options = options;
     this.app = app;
   }
-  async create (data: any, params?: Params): Promise<Data> {
+  async create (data: any, params?: Params,confirm?:boolean): Promise<Data> {
+    const config =  await (await this.app.get('mongoClient')).collection("system").findOne({})
+    if(!config.confirmation.allowInsertWithoutConfirm){
+      if(!confirm){
+        const Insert_service = this.app.service('data/insert-confirm');
+        await Insert_service.create(data)
+        return {
+          result:"wait for confirm"
+        }
+      }
+    }
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
