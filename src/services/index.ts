@@ -24,6 +24,7 @@ import systemManageConfig from './systemManage/config/config.service';
 import systemManageReset from './systemManage/reset/reset.service';
 import dataUpload from './data/upload/upload.service';
 import dataInsertFile from './data/insert-file/insert-file.service';
+import autoMapping from './auto/mapping/mapping.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -52,4 +53,5 @@ export default function (app: Application) {
   app.configure(systemManageReset);
   app.configure(dataUpload);
   app.configure(dataInsertFile);
+  app.configure(autoMapping);
 }
