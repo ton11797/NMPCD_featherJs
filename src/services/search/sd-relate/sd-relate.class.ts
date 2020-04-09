@@ -41,20 +41,34 @@ export class SdRelate implements ServiceMethods<Data> {
     neoQuery =`MATCH p =(n:_data:_${schemaName} {uuid:"${source}"})-[_${versionSelect}*]-(n2:_${destination}) RETURN n,p`
     const relateData = await neo.run(neoQuery,{})
     debug.logging(99,"sd-relate","neo "+neoQuery)
-    const temp = relateData.records.map((el:any)=>{
+    const resultRelate = relateData.records.map((el:any)=>{
       return el._fields
     }).map((el:any)=>{
       el.shift()
       return el
     }).map((el:any)=>{
       return el[0].segments
+    }).filter((el:any)=>{
+      return this.checkRelation(el,shortestPath,versionUUID)
     })
-    return temp.filter((el:any)=>{
-      return this.checkRelation(el,shortestPath)
-    })
+    const searchData_service = this.app.service('data/search-data');
+    let result = []
+    for(let i=0;i<resultRelate.length;i++){
+      let temp1:any = []
+      for(let j=0;j<resultRelate[i].length;j++){
+        try {
+          temp1.push((await searchData_service.create(resultRelate[i][j])).rows[0])
+        } catch (error) {
+          return error;
+        }
+      }
+      result.push(temp1)
+    }
+    
+    return {result,shortestPath}
   }
 
-  checkRelation(path:any,shortestPath:Array<string>){
+  checkRelation(path:any,shortestPath:Array<string>,versionUUID:string){
     for(let i=0;i<path.length;i++){
       const temp = path[i].end.labels.find((el:any)=>{
         if(el === `_${shortestPath[i]}`)return true
@@ -62,8 +76,11 @@ export class SdRelate implements ServiceMethods<Data> {
       })
       if(temp === undefined)return false
       path[i] = {
+        versionUUID,
         schemaName:shortestPath[i],
-        uuid:path[i].end.properties.uuid
+        condition:{
+          _uuid:path[i].end.properties.uuid
+        },
       }
     }
     if(path.length !== shortestPath.length) return false

@@ -24,7 +24,7 @@ export class SearchData implements ServiceMethods<Data> {
     };
   }
 
-  async create (data: any, params?: Params): Promise<Data> {
+  async create (data: any, params?: Params): Promise<any> {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current, params)));
     }
