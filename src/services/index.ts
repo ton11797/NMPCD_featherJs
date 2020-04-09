@@ -25,6 +25,7 @@ import systemManageReset from './systemManage/reset/reset.service';
 import dataUpload from './data/upload/upload.service';
 import dataInsertFile from './data/insert-file/insert-file.service';
 import autoMapping from './auto/mapping/mapping.service';
+import searchSdRelate from './search/sd-relate/sd-relate.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -54,4 +55,5 @@ export default function (app: Application) {
   app.configure(dataUpload);
   app.configure(dataInsertFile);
   app.configure(autoMapping);
+  app.configure(searchSdRelate);
 }
