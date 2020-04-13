@@ -43,8 +43,8 @@ export class EditConfirm implements ServiceMethods<Data> {
     let column = ""
     let columnUpdate = ""
     for(let i=0;i<result.schema[schemaName].length;i++){
-      if(updateData[result.schema[schemaName][i].fieldName] !== undefined){
-        columnUpdate = `${columnUpdate} ,'${updateData[result.schema[schemaName][i].fieldName]}' as ${result.schema[schemaName][i].fieldName} `
+      if(updateData[result.schema[schemaName][i].fieldName.toLowerCase()] !== undefined){
+        columnUpdate = `${columnUpdate} ,'${updateData[result.schema[schemaName][i].fieldName.toLowerCase()]}' as ${result.schema[schemaName][i].fieldName} `
       }else{
         columnUpdate = `${columnUpdate} ,${result.schema[schemaName][i].fieldName} `
       }
