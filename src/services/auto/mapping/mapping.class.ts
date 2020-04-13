@@ -25,9 +25,11 @@ export class Mapping implements ServiceMethods<Data> {
   }
 
   async create (data: any, params?: Params): Promise<Data> {
+    const timeStart = Date.now()
     const debug = this.app.get('debug')
     debug.logging(1,"API_call","Auto-mapping")
     const {versionUUID,node1,node2,fieldMap} = data
+    await (await this.app.get('mongoClient')).collection("system").updateOne({},{$set:{autoMapping:{running:true}}})
     const client:any =  await this.app.get('postgresClient')
     let sql = `SELECT * FROM "${node1}_${versionUUID}"`
     debug.logging(99,"data-link","postgres "+sql)
@@ -49,7 +51,14 @@ export class Mapping implements ServiceMethods<Data> {
         // }
       }
     }
-    return {head,relate};
+    
+    await (await this.app.get('mongoClient')).collection("autoMapping").insertOne({head,relate,detail:{
+      versionUUID,node1,node2,fieldMap,timeStart, timeEnd:Date.now()
+    }})
+    await (await this.app.get('mongoClient')).collection("system").updateOne({},{$set:{autoMapping:{running:false}}})
+    return {head,relate,detail:{
+      versionUUID,node1,node2,fieldMap,timeStart, timeEnd:Date.now()
+    }};
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
