@@ -51,7 +51,10 @@ export class ConfirmData implements ServiceMethods<Data> {
       update = `DELTE FROM "${schemaName}_${versionUUID}_c" WHERE _id = ${confirmId}`
     }else{
       if(resultQ._user[user.id] === undefined){
-        resultQ._user[user.id] = action
+        resultQ._user[user.id] = {
+          action,
+          email:user.email
+        }
         if(action === 0){
           update = `UPDATE "${schemaName}_${versionUUID}_c"
           SET
@@ -73,7 +76,10 @@ export class ConfirmData implements ServiceMethods<Data> {
           throw new BadRequest("Ready confirm")
         }else{
           if(action ===0){
-            resultQ._user[user.id] = action
+            resultQ._user[user.id] = {
+              action,
+              email:user.email
+            }
             update = `UPDATE "${schemaName}_${versionUUID}_c"
             SET
             _approved = ${resultQ._approved+1},
@@ -81,7 +87,10 @@ export class ConfirmData implements ServiceMethods<Data> {
             WHERE _id = ${confirmId}
             `
           }else{
-            resultQ._user[user.id] = action
+            resultQ._user[user.id] = {
+              action,
+              email:user.email
+            }
             update = `UPDATE "${schemaName}_${versionUUID}_c"
             SET
             _approved = ${resultQ._approved-1},
