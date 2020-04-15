@@ -55,6 +55,10 @@ export class NewVersion extends common implements ServiceMethods<any> {
             CREATE TABLE "${arraySchema[i]}_${uuid}_c" AS 
             TABLE "${arraySchema[i]}_${refVersion}_c" 
             WITH NO DATA;`)
+            await client.query(`
+            ALTER TABLE "${arraySchema[i]}_${uuid}_c" ALTER COLUMN _id SET DEFAULT nextval('uuid_c_d_id_seq'::regclass);`)
+            await client.query(`
+            ALTER TABLE "${arraySchema[i]}_${uuid}_c" ALTER COLUMN _id SET NOT NULL;`)
             //copy data table
             await client.query(`
             CREATE TABLE "${arraySchema[i]}_${uuid}" AS 

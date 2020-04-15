@@ -25,9 +25,25 @@ export class DataLink implements ServiceMethods<Data> {
     };
   }
 
-  async create (data: any, params?: Params): Promise<any> {
+  async create (data: any, params?: Params,confirm?:boolean): Promise<any> {
     let debug = this.app.get('debug')
-    debug.logging(1,"API_call","data-link") 
+    debug.logging(1,"API_call","data-link")
+    const config =  await (await this.app.get('mongoClient')).collection("system").findOne({})
+    if(data.action === undefined){
+      data.action = 0
+    }
+    if(data.versionUUID === undefined){
+      data.versionUUID = data.version
+    }
+    if(!config.confirmation.allowMappingWithoutConfirm){
+      if(!confirm){
+        const map_service = this.app.service('link/datalink-confirm');
+        await map_service.create(data)
+        return {
+          result:"wait for confirm"
+        }
+      }
+    }
     let {node1,node2,uuid1,uuid2,version} = data
     let versionSelect = version.replace(/-/g,"")
 

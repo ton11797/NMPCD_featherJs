@@ -28,10 +28,14 @@ export class Reset implements ServiceMethods<Data> {
         confirmationRequire:1,
         confirmationSubmit:false,
         allowInsertConfirm:true,
+        allowMappingWithoutConfirm:true,
         rejectThreshold:1
       },
       schemaManagement:{
         dataType:[{type:"varchar()",length:true}]
+      },
+      autoMapping:{
+        running:false
       }
     })
     await Mdb.connectDB()
