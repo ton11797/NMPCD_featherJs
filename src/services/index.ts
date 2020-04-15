@@ -27,6 +27,8 @@ import dataInsertFile from './data/insert-file/insert-file.service';
 import autoMapping from './auto/mapping/mapping.service';
 import searchSdRelate from './search/sd-relate/sd-relate.service';
 import dashboardUpdate from './dashboard/update/update.service';
+import confirmConfirmMap from './confirm/confirm-map/confirm-map.service';
+import linkDatalinkConfirm from './link/datalink-confirm/datalink-confirm.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -58,4 +60,6 @@ export default function (app: Application) {
   app.configure(autoMapping);
   app.configure(searchSdRelate);
   app.configure(dashboardUpdate);
+  app.configure(confirmConfirmMap);
+  app.configure(linkDatalinkConfirm);
 }
