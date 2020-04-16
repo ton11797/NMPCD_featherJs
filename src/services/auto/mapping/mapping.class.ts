@@ -64,7 +64,8 @@ export class Mapping implements ServiceMethods<Data> {
     for(let i =0;i<node1Data.length;i++){
       sql = `SELECT * FROM "${node2}_${versionUUID}" WHERE LOWER("${node2}_${versionUUID}".${fieldMap}) like $1`
       debug.logging(99,"data-link","postgres "+sql)
-      const match = (await client.query(sql,[`${node1Data[i][fieldMap.toLowerCase()]}%`])).rows
+      debug.logging(99,"data-link","$1 "+[`${node1Data[i][fieldMap.toLowerCase()]}%`])
+      const match = (await client.query(sql,[`${node1Data[i][fieldMap.toLowerCase()]}%`.toLowerCase()])).rows
       if(match.length >0){
         head.push(node1Data[i]._uuid)
         relate.push(match.map((el:any)=>el._uuid))

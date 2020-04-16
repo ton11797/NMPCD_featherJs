@@ -29,10 +29,10 @@ export class EditData implements ServiceMethods<Data> {
     };
   }
 
-  async create (data: Data|Data[], params?: Params,confirm?:boolean): Promise<any> {
+  async create (data: Data|Data[], params?: Params): Promise<any> {
     const config =  await (await this.app.get('mongoClient')).collection("system").findOne({})
     if(!config.confirmation.allowInsertWithoutConfirm){
-      if(!confirm){
+      if(!(params!== undefined && params.confirm!== undefined)){
         const confirm_service = this.app.service('data/edit-confirm');
         await confirm_service.create(data)
         return {

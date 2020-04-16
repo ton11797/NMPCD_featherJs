@@ -25,7 +25,7 @@ export class DataLink implements ServiceMethods<Data> {
     };
   }
 
-  async create (data: any, params?: Params,confirm?:boolean): Promise<any> {
+  async create (data: any, params?: Params): Promise<any> {
     let debug = this.app.get('debug')
     debug.logging(1,"API_call","data-link")
     const config =  await (await this.app.get('mongoClient')).collection("system").findOne({})
@@ -36,7 +36,7 @@ export class DataLink implements ServiceMethods<Data> {
       data.versionUUID = data.version
     }
     if(!config.confirmation.allowMappingWithoutConfirm){
-      if(!confirm){
+      if(!(params!== undefined && params.confirm!== undefined)){
         const map_service = this.app.service('link/datalink-confirm');
         await map_service.create(data)
         return {

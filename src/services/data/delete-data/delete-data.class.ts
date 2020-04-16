@@ -28,10 +28,10 @@ export class DeleteData implements ServiceMethods<Data> {
     };
   }
 
-  async create (data: any, params?: Params,confirm?:boolean): Promise<any> {
+  async create (data: any, params?: Params): Promise<any> {
     const config =  await (await this.app.get('mongoClient')).collection("system").findOne({})
     if(!config.confirmation.allowInsertWithoutConfirm){
-      if(!confirm){
+      if(!(params!== undefined && params.confirm!== undefined)){
         const confirm_service = this.app.service('data/delete-confirm');
         await confirm_service.create(data)
         return {

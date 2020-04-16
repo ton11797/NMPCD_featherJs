@@ -72,7 +72,7 @@ export class ConfirmData implements ServiceMethods<Data> {
           `
         }
       }else{
-        if(resultQ._user[user.id] === action){
+        if(resultQ._user[user.id].action === action){
           throw new BadRequest("Ready confirm")
         }else{
           if(action ===0){
@@ -100,16 +100,95 @@ export class ConfirmData implements ServiceMethods<Data> {
           }
         }
       }
+      debug.logging(99,"confirm-data","postgress "+update)
+      let result = await client.query(update) 
+      const config =  await (await this.app.get('mongoClient')).collection("system").findOne({})
+      query = `SELECT * FROM "${schemaName}_${versionUUID}_c" WHERE _id = ${confirmId} `
+      debug.logging(99,"confirm-data","postgress "+query)
+      resultQ = (await client.query(query)).rows[0]
+      if(resultQ._approved >= config.confirmation.confirmationRequire){
+        if(resultQ._action ===0){
+          try {
+            let tmpField = resultQ
+            delete tmpField._id
+            delete tmpField._uuid
+            delete tmpField._count
+            delete tmpField._approved
+            delete tmpField._user
+            delete tmpField._status
+            delete tmpField._action
+            const request = {
+              versionUUID:versionUUID,
+              schemaName:schemaName,
+              value:tmpField
+            }
+            console.log(request)
+            const insert_service = this.app.service('data/insert');
+            await insert_service.create(request,{confirm:true})
+          } catch (error) {
+            
+          }
+          update = `UPDATE "${schemaName}_${versionUUID}_c"
+            SET
+            _status= 1
+            WHERE _id = ${confirmId}
+            `
+          debug.logging(99,"confirm-data","postgress "+update)
+          await client.query(update) 
+        }else if(resultQ._action ===1){
+          console.log("edit")
+          try {
+            let tmpField = resultQ
+            delete tmpField._id
+            delete tmpField._count
+            delete tmpField._approved
+            delete tmpField._user
+            delete tmpField._status
+            delete tmpField._action
+            const request = {
+              versionUUID:versionUUID,
+              uuid:resultQ._uuid,
+              schemaName:schemaName,
+              data:tmpField
+            }
+            console.log(request)
+            const edit_service = this.app.service('data/edit-data');
+            await edit_service.create(request,{confirm:true})
+          } catch (error) {
+            
+          }
+          update = `UPDATE "${schemaName}_${versionUUID}_c"
+            SET
+            _status= 1
+            WHERE _id = ${confirmId}
+            `
+          debug.logging(99,"confirm-data","postgress "+update)
+          await client.query(update) 
+        }else if(resultQ._action ===2){
+          
+        }else{
+
+        }
+        console.log(resultQ)
+      }else if((resultQ._count-resultQ._approved) >= config.confirmation.rejectThreshold){
+        console.log("rejected")
+        update = `UPDATE "${schemaName}_${versionUUID}_c"
+            SET
+            _status= 2
+            WHERE _id = ${confirmId}
+            `
+        debug.logging(99,"confirm-data","postgress "+update)
+        await client.query(update) 
+      }
+      delete result.command
+      delete result.oid
+      delete result._parsers
+      delete result._types
+      delete result.RowCtor
+      delete result.rowAsArray
+      return {data,user,resultQ,update,result};
     }
-    debug.logging(99,"confirm-data","postgress "+update)
-    let result = await client.query(update) 
-    delete result.command
-    delete result.oid
-    delete result._parsers
-    delete result._types
-    delete result.RowCtor
-    delete result.rowAsArray
-    return {data,user,resultQ,update,result};
+     return {reuslt:"ok"}
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {

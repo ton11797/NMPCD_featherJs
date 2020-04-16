@@ -25,6 +25,8 @@ export class Config implements ServiceMethods<Data> {
 
   async create (data: any, params?: Params): Promise<Data> {
     delete data._id
+    data.confirmation.confirmationRequire = parseInt(data.confirmation.confirmationRequire)
+    data.confirmation.rejectThreshold = parseInt(data.confirmation.rejectThreshold)
     const newconfig = {$set:data}
     const result = await (await this.app.get('mongoClient')).collection("system").updateOne({},newconfig)
     return result
