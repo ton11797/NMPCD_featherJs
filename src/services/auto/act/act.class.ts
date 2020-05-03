@@ -30,7 +30,6 @@ export class Act implements ServiceMethods<Data> {
     const {action,_id} = data
     let result  = await (await this.app.get('mongoClient')).collection("autoMapping").findOne({_id:new ObjectId(_id)})
     debug.logging(1,"API_call","Auto-act|Action:"+action)
-    console.log(result)
     if(action ===1){
       for(let i =0;i<result.head.length;i++){
         for(let j =0;j<result.relate[i].length;j++){
@@ -42,7 +41,6 @@ export class Act implements ServiceMethods<Data> {
               uuid2:result.relate[i][j],
               version:result.versionUUID
             }
-            console.log(tmp)
             const map_service = this.app.service('link/data-link');
             await map_service.create(tmp,{confirm:true})
           } catch (error) {

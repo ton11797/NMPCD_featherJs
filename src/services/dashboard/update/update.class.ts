@@ -39,16 +39,22 @@ export class Update implements ServiceMethods<Data> {
     for(let i=0;i<schemaList.length;i++){
       query = `MATCH (n:_${version}:_${schemaList[i]}) RETURN count(n)`
       debug.logging(99,"Dashboard_update","neo:"+query)
-      const dataCount = (await neo.run(query)).records[0]._fields[0].low
+      const dataCount = parseInt((await neo.run(query)).records[0]._fields[0].low)
       query= `SELECT count(*) FROM "${schemaList[i]}_${versionUUID}_c" WHERE _status = 0 `
       debug.logging(99,"Dashboard_update","postgres:"+query)
-      const comfirmCount = (await client.query(query)).rows[0].count
+      const comfirmCount = parseInt((await client.query(query)).rows[0].count)
+      query= `SELECT count(*) FROM "mapping_c" WHERE _version = '${versionUUID}' AND ( _node1 = '${schemaList[i]}' OR _node2 = '${schemaList[i]}')`
+      debug.logging(99,"Dashboard_update","postgres:"+query)
+      const RelateCount = parseInt((await client.query(query)).rows[0].count)
+      query= `SELECT count(*) FROM "mapping_c" WHERE _version = '${versionUUID}' AND  ( _node1 = '${schemaList[i]}' OR _node2 = '${schemaList[i]}') AND _status != 0 `
+      debug.logging(99,"Dashboard_update","postgres:"+query)
+      const RelateCount2 = parseInt((await client.query(query)).rows[0].count)
       totalData = totalData + dataCount
       result.push({
         Schema:schemaList[i],
         dataCount:dataCount,
-        WaitCount:{per:100-Math.floor((comfirmCount*100)/(dataCount+comfirmCount)),value:comfirmCount},
-        RelateCount:{}
+        WaitCount:{per:dataCount===0||comfirmCount===0?100:100-Math.floor((comfirmCount*100)/(dataCount+comfirmCount)),value:comfirmCount},
+        RelateCount:{count:RelateCount,confirm:RelateCount2,per:RelateCount2===0||RelateCount===0?100:100-Math.floor((RelateCount2*100)/(RelateCount+RelateCount2))}
       })
     }
     query = `MATCH (n:version)

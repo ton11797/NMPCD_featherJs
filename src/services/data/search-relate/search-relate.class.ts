@@ -35,7 +35,6 @@ export class SearchRelate implements ServiceMethods<Data> {
     const relation = await neo.run(`MATCH p =(n:_data:_${schemaName} {uuid:"${uuid}"})-[r]-(n2) RETURN p`,{})
     debug.logging(99,"search-relate","neo "+`MATCH p =(n:_data:_${schemaName} {uuid:"${uuid}"})-[r]-(n2) RETURN p`)
     let respond = []
-    console.log(JSON.stringify(relation.records))
     for(let i=0;i<relation.records.length;i++){
       respond.push({
         start:relation.records[i]._fields[0].start.properties,
